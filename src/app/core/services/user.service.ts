@@ -7,12 +7,11 @@ import { environment } from 'src/app/environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = environment.apiUrl + 'users';
-
+private apiUrl = environment.apiUrl + 'User';
   constructor(private http: HttpClient) {}
 
   private getHeaders() {
-    const token = localStorage.getItem(environment.tokenKey);
+   const token = localStorage.getItem('token');
 
     return {
       headers: new HttpHeaders({

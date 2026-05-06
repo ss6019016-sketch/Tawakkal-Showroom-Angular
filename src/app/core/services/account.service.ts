@@ -10,7 +10,6 @@ import { environment } from 'src/app/environments/environment.prod';
 export class AccountService {
   private apiUrl = environment.apiUrl + 'account';
   private apiUrl2 = environment.apiUrl + 'voucher'; 
-  private apiUrl3 = environment.apiUrl + 'Voucher'; 
 
   constructor(private http: HttpClient) {}
 
@@ -67,14 +66,14 @@ export class AccountService {
     return this.http.get<VoucherEntry[]>(url, this.headers());
   }
   getCashBook(from?: string, to?: string): Observable<VoucherEntry[]> {
-    let url = `${this.apiUrl}/voucher/cash-book`;
+    let url = `${this.apiUrl2}/cash-book`;
     const params: string[] = [];
     if (from) params.push(`from=${from}`);
     if (to)   params.push(`to=${to}`);
     if (params.length) url += '?' + params.join('&');
     return this.http.get<VoucherEntry[]>(url, this.headers());
   }
-  getTrialBalance(): Observable<Account[]> {
-    return this.http.get<Account[]>(`${this.apiUrl}/voucher/trial-balance`, this.headers());
-  }
+getTrialBalance(): Observable<Account[]> {
+  return this.http.get<Account[]>(`${this.apiUrl2}/trial-balance`, this.headers());
+}
 }
