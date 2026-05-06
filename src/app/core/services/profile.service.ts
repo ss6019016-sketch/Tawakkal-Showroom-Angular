@@ -7,7 +7,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment.prod';
+// import { environment } from 'src/environments-old/environment.prod';
+
+import { environment } from 'src/app/environments/environment.prod';
 
 export interface UserProfile {
   id: number;

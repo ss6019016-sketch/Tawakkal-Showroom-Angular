@@ -3,7 +3,9 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PaginatedResponse } from '..';
-import { environment } from 'src/environments/environment.prod';
+// import { environment } from 'src/environments-old/environment.prod';
+import { environment } from 'src/app/environments/environment.prod';
+
 
 @Injectable({
   providedIn: 'root'

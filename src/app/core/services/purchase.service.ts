@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PurchaseBill } from 'src/app/models/purchase-bill.model';
-import { environment } from 'src/environments/environment.prod';
+// import { environment } from 'src/environments-old/environment.prod';
+import { environment } from 'src/app/environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseService {

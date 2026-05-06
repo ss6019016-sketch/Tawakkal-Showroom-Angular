@@ -2,7 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Account, Voucher, VoucherEntry } from 'src/app/models/Account.model';
-import { environment } from 'src/environments/environment';
+// import { environment } from 'src/environments-old/environment';
+import { environment } from 'src/app/environments/environment.prod';
+
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
