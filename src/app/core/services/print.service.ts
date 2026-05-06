@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class PrintService {    
-    
+     
   // ─── SALES INVOICE PRINT ───
   printSalesInvoice(invoice: any, companyInfo: any = {}) {
     const company = {
