@@ -1,0 +1,289 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-file-earmark-bar-graph"></i>
+    Accounts Reports
+  </div>
+  <div class="page-subtitle">
+    Financial statements & ledger analysis
+  </div>
+
+  <!-- TABS -->
+  <div class="erp-tabs mb-4">
+
+    <button class="erp-tab"
+            [class.active]="activeReport==='trial'"
+            (click)="activeReport='trial'; loadTrialBalance()">
+      Trial Balance
+    </button>
+
+    <button class="erp-tab"
+            [class.active]="activeReport==='ledger'"
+            (click)="activeReport='ledger'">
+      Account Ledger
+    </button>
+
+  </div>
+
+  <!-- ================= TRIAL BALANCE ================= -->
+  <div *ngIf="activeReport==='trial'">
+
+    <!-- STATS -->
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="bi bi-arrow-down-circle"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ totalDebit | number:'1.2-2' }}
+            </div>
+            <div class="stat-label">Total Debit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="bi bi-arrow-up-circle"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ totalCredit | number:'1.2-2' }}
+            </div>
+            <div class="stat-label">Total Credit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <div>
+            <div class="stat-value"
+                 [class.text-success]="totalDebit===totalCredit"
+                 [class.text-danger]="totalDebit!==totalCredit">
+
+              {{ totalDebit===totalCredit ? 'Balanced' : 'Unbalanced' }}
+
+            </div>
+            <div class="stat-label">Status</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="erp-card">
+
+      <div class="erp-card-header dark">
+        Trial Balance
+      </div>
+
+      <div class="erp-card-body p-0">
+
+        <div class="erp-table-wrapper">
+
+          <table class="erp-table">
+
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Account Name</th>
+                <th>Type</th>
+                <th class="text-right">Debit</th>
+                <th class="text-right">Credit</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <ng-container *ngFor="let a of trialBalance">
+
+                <tr *ngIf="(a.balance||0) !== 0">
+
+                  <td><code>{{ a.code }}</code></td>
+
+                  <td>{{ a.name }}</td>
+
+                  <td>
+                    <span class="erp-badge gray">
+                      {{ a.accountTypeName }}
+                    </span>
+                  </td>
+
+                  <td class="text-right text-success">
+                    {{ [1,5].includes(a.accountType)
+                        ? (a.balance | number:'1.2-2')
+                        : '' }}
+                  </td>
+
+                  <td class="text-right text-danger">
+                    {{ [2,3,4].includes(a.accountType)
+                        ? (a.balance | number:'1.2-2')
+                        : '' }}
+                  </td>
+
+                </tr>
+
+              </ng-container>
+
+            </tbody>
+
+            <tfoot>
+              <tr class="grand-total-row">
+
+                <td colspan="3" class="text-right">TOTAL</td>
+
+                <td class="text-right">
+                  {{ totalDebit | number:'1.2-2' }}
+                </td>
+
+                <td class="text-right">
+                  {{ totalCredit | number:'1.2-2' }}
+                </td>
+
+              </tr>
+            </tfoot>
+
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= LEDGER ================= -->
+  <div *ngIf="activeReport==='ledger'">
+
+    <!-- FILTER CARD -->
+    <div class="erp-card mb-4">
+
+      <div class="erp-card-header primary">
+        Filter Ledger
+      </div>
+
+      <div class="erp-card-body">
+
+        <div class="row">
+
+          <div class="col-md-4 form-group">
+            <label class="form-label">Account</label>
+            <select class="form-control"
+                    [(ngModel)]="selectedAccountId">
+
+              <option value="">-- Select Account --</option>
+
+              <option *ngFor="let a of accountList"
+                      [value]="a.id">
+                {{ a.code }} - {{ a.name }}
+              </option>
+
+            </select>
+          </div>
+
+          <div class="col-md-3 form-group">
+            <label class="form-label">From</label>
+            <input type="date"
+                   class="form-control"
+                   [(ngModel)]="fromDate">
+          </div>
+
+          <div class="col-md-3 form-group">
+            <label class="form-label">To</label>
+            <input type="date"
+                   class="form-control"
+                   [(ngModel)]="toDate">
+          </div>
+
+          <div class="col-md-2 flex flex-center">
+            <button class="btn btn-primary w-full"
+                    (click)="loadLedger()">
+              <i class="bi bi-search"></i>
+              Load
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- LEDGER TABLE -->
+    <div class="erp-card" *ngIf="ledgerEntries.length > 0">
+
+      <div class="erp-card-header dark">
+        Account Ledger
+      </div>
+
+      <div class="erp-card-body p-0">
+
+        <div class="erp-table-wrapper">
+
+          <table class="erp-table">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th class="text-right">Debit</th>
+                <th class="text-right">Credit</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let e of ledgerEntries; let i = index">
+
+                <td>{{ i + 1 }}</td>
+
+                <td>{{ e.description }}</td>
+
+                <td class="text-right text-success">
+                  {{ e.debit > 0 ? (e.debit | number:'1.2-2') : '' }}
+                </td>
+
+                <td class="text-right text-danger">
+                  {{ e.credit > 0 ? (e.credit | number:'1.2-2') : '' }}
+                </td>
+
+              </tr>
+
+            </tbody>
+
+            <tfoot>
+              <tr class="grand-total-row">
+
+                <td colspan="2" class="text-right">TOTAL</td>
+
+                <td class="text-right">
+                  {{ ledgerDebit | number:'1.2-2' }}
+                </td>
+
+                <td class="text-right">
+                  {{ ledgerCredit | number:'1.2-2' }}
+                </td>
+
+              </tr>
+            </tfoot>
+
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,331 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-cash-stack"></i>
+    Receipt Voucher
+  </div>
+  <div class="page-subtitle">
+    Manage incoming cash & bank receipts
+  </div>
+
+  <!-- TABS -->
+  <div class="erp-tabs mb-4">
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='form'"
+            (click)="activeTab='form'; reset()">
+      <i class="bi bi-plus-circle"></i>
+      {{ editMode ? 'Edit Voucher' : 'New Voucher' }}
+    </button>
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='list'"
+            (click)="activeTab='list'">
+      <i class="bi bi-list-ul"></i>
+      Voucher List
+      <span class="badge-count">{{ voucherList.length }}</span>
+    </button>
+
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div *ngIf="activeTab==='form'">
+
+    <form #vForm="ngForm" (ngSubmit)="onSubmit(vForm)">
+
+      <!-- HEADER -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header success">
+          Voucher Header
+        </div>
+
+        <div class="erp-card-body">
+
+          <div class="row">
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Voucher No</label>
+              <input class="form-control readonly"
+                     name="voucherNo"
+                     [(ngModel)]="voucher.voucherNo"
+                     readonly>
+            </div>
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Date <span class="required">*</span></label>
+              <input type="date"
+                     class="form-control"
+                     name="voucherDate"
+                     [(ngModel)]="voucher.voucherDate"
+                     required>
+            </div>
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Description</label>
+              <input type="text"
+                     class="form-control"
+                     name="description"
+                     [(ngModel)]="voucher.description"
+                     placeholder="Optional">
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ENTRIES -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header dark">
+
+          <span>
+            <i class="bi bi-journal-text"></i>
+            Journal Entries (Double Entry)
+          </span>
+
+          <button type="button"
+                  class="btn btn-light btn-sm"
+                  (click)="addEntry()">
+            <i class="bi bi-plus-lg"></i>
+            Add Row
+          </button>
+
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table items-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Account</th>
+                  <th>Description</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let entry of voucher.entries; let i = index">
+
+                  <td>{{ i + 1 }}</td>
+
+                  <td>
+                    <select class="form-control"
+                            [name]="'acc_'+i"
+                            [(ngModel)]="entry.accountId"
+                            required>
+
+                      <option value="">-- Select Account --</option>
+
+                      <optgroup *ngFor="let t of [
+                        {id:1,n:'Asset'},
+                        {id:2,n:'Liability'},
+                        {id:3,n:'Equity'},
+                        {id:4,n:'Income'},
+                        {id:5,n:'Expense'}]"
+                        [label]="t.n">
+
+                        <option *ngFor="let a of accountList | accountFilter:t.id"
+                                [value]="a.id">
+                          {{ a.code }} - {{ a.name }}
+                        </option>
+
+                      </optgroup>
+
+                    </select>
+                  </td>
+
+                  <td>
+                    <input class="form-control"
+                           [(ngModel)]="entry.description"
+                           [name]="'desc_'+i">
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="entry.debit"
+                           [name]="'dr_'+i"
+                           min="0"
+                           (ngModelChange)="calcTotal()">
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="entry.credit"
+                           [name]="'cr_'+i"
+                           min="0"
+                           (ngModelChange)="calcTotal()">
+                  </td>
+
+                  <td>
+                    <button type="button"
+                            class="btn btn-danger btn-sm"
+                            (click)="removeEntry(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="voucher.entries.length===0">
+                  <td colspan="6" class="text-center text-muted py-3">
+                    No entries added yet
+                  </td>
+                </tr>
+
+              </tbody>
+
+              <tfoot>
+                <tr class="grand-total-row">
+
+                  <td colspan="3" class="text-right">TOTAL</td>
+
+                  <td class="text-right">
+                    {{ getTotalDebit() | number:'1.2-2' }}
+                  </td>
+
+                  <td class="text-right">
+                    {{ getTotalCredit() | number:'1.2-2' }}
+                  </td>
+
+                  <td>
+                    <span class="status-dot"
+                          [class.active]="isBalanced()"
+                          [class.inactive]="!isBalanced()"></span>
+                  </td>
+
+                </tr>
+              </tfoot>
+
+            </table>
+
+          </div>
+
+          <div class="p-3 fs-sm text-muted">
+            Debit aur Credit equal hona zaroori hai (Double Entry Rule)
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="form-actions">
+
+        <button type="submit"
+                class="btn btn-success"
+                [disabled]="!isBalanced()">
+
+          <i class="bi bi-check-lg"></i>
+          {{ editMode ? 'Update' : 'Save Voucher' }}
+        </button>
+
+        <button type="button"
+                class="btn btn-secondary"
+                (click)="reset()">
+          Reset
+        </button>
+
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ================= LIST ================= -->
+  <div *ngIf="activeTab==='list'">
+
+    <div class="erp-card">
+
+      <div class="erp-card-header dark">
+        Receipt Vouchers
+      </div>
+
+      <div class="erp-card-body p-0">
+
+        <div class="erp-table-wrapper">
+
+          <table class="erp-table">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Voucher No</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Entries</th>
+                <th class="text-right">Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let v of voucherList; let i = index">
+
+                <td>{{ i + 1 }}</td>
+
+                <td>
+                  <span class="erp-badge success">
+                    {{ v.voucherNo }}
+                  </span>
+                </td>
+
+                <td>{{ v.voucherDate | date:'dd/MM/yyyy' }}</td>
+
+                <td>{{ v.description }}</td>
+
+                <td>
+                  <span class="erp-badge gray">
+                    {{ v.entries.length }}
+                  </span>
+                </td>
+
+                <td class="text-right fw-700">
+                  {{ v.totalAmount | number:'1.2-2' }}
+                </td>
+
+                <td class="flex gap-2">
+
+                  <button class="btn btn-primary btn-sm"
+                          (click)="editVoucher(v)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <button class="btn btn-danger btn-sm"
+                          (click)="deleteVoucher(v.id!)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="voucherList.length===0">
+                <td colspan="7" class="text-center text-muted py-3">
+                  No vouchers found
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,295 @@
+<div class="page-container animate-left">
+
+  <!-- TITLE -->
+  <h2 class="page-title text-success">
+    <i class="bi bi-receipt"></i>
+    Sales Invoice
+  </h2>
+
+  <!-- TABS -->
+  <div class="erp-tabs mb-4">
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='form'"
+            (click)="activeTab='form'; reset()">
+
+      <i class="bi bi-plus-circle"></i>
+      {{ editMode ? 'Edit Invoice' : 'New Invoice' }}
+
+    </button>
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='list'"
+            (click)="activeTab='list'">
+
+      <i class="bi bi-list-ul"></i>
+      Invoice List
+      <span class="badge-count ms-1">{{ invoiceList.length }}</span>
+
+    </button>
+
+  </div>
+
+  <!-- FORM -->
+  <div *ngIf="activeTab==='form'">
+
+    <!-- HEADER CARD -->
+    <div class="erp-card mb-4">
+
+      <div class="erp-card-header success">
+        Invoice Header
+      </div>
+
+      <div class="erp-card-body">
+
+        <div class="row">
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Invoice No</label>
+
+            <div class="input-group">
+              <input type="text"
+                     class="form-control"
+                     [(ngModel)]="invoice.invoiceNo"
+                     name="invoiceNo"
+                     readonly>
+
+              <span class="input-group-text">
+                <i class="bi bi-magic"></i>
+              </span>
+            </div>
+
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Invoice Date *</label>
+            <input type="date"
+                   class="form-control"
+                   [(ngModel)]="invoice.invoiceDate"
+                   name="invoiceDate"
+                   required>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Customer *</label>
+
+            <select class="form-select"
+                    [(ngModel)]="invoice.customerId"
+                    name="customerId"
+                    required>
+
+              <option value="">-- Customer Select --</option>
+
+              <option *ngFor="let c of customerList"
+                      [value]="c.id">
+                {{ c.name }}
+              </option>
+
+            </select>
+
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Notes</label>
+
+            <textarea class="form-control"
+                      [(ngModel)]="invoice.notes"
+                      name="notes"
+                      rows="2"></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ITEMS CARD -->
+    <div class="erp-card mb-4">
+
+      <div class="erp-card-header dark d-flex justify-content-between align-items-center">
+
+        <span><i class="bi bi-box"></i> Items</span>
+
+        <button class="btn btn-sm btn-success" (click)="addItem()">
+          <i class="bi bi-plus-lg"></i> Add Item
+        </button>
+
+      </div>
+
+      <div class="erp-card-body table-responsive">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th class="text-end">Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let item of invoice.items; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>
+                <select class="form-select form-select-sm"
+                        (change)="onProductSelect(i, $any($event.target).value)">
+
+                  <option value="">-- Select --</option>
+
+                  <option *ngFor="let p of productList"
+                          [value]="p.id">
+                    {{ p.name }} ({{ p.rate | number:'1.2-2' }})
+                  </option>
+
+                </select>
+              </td>
+
+              <td>
+                <input type="number"
+                       class="form-control form-control-sm"
+                       [(ngModel)]="item.qty"
+                       min="1"
+                       (ngModelChange)="calcTotal()">
+              </td>
+
+              <td>
+                <input type="number"
+                       class="form-control form-control-sm"
+                       [(ngModel)]="item.rate"
+                       readonly>
+              </td>
+
+              <td class="text-end fw-bold">
+                {{ getAmount(item) | number:'1.2-2' }}
+              </td>
+
+              <td>
+                <button class="btn btn-sm btn-outline-danger"
+                        (click)="removeItem(i)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+
+            </tr>
+
+            <tr *ngIf="invoice.items.length===0">
+              <td colspan="6" class="empty-state">
+                Add item(s).
+              </td>
+            </tr>
+
+          </tbody>
+
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="4" class="text-end">Grand Total</td>
+              <td class="text-end">{{ invoice.totalAmount | number:'1.2-2' }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+
+        </table>
+
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="d-flex gap-2 mb-5">
+
+      <button class="btn btn-success px-4">
+        <i class="bi bi-check-lg"></i>
+        {{ editMode ? 'Update Invoice' : 'Save Invoice' }}
+      </button>
+
+      <button class="btn btn-light" (click)="reset()">
+        Reset
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- LIST -->
+  <div *ngIf="activeTab==='list'">
+
+    <div class="erp-card">
+
+      <div class="erp-card-header dark">
+        All Sales Invoices
+      </div>
+
+      <div class="erp-card-body table-responsive">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Invoice No</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th class="text-end">Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let inv of invoiceList; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>
+                <span class="erp-badge success">
+                  {{ inv.invoiceNo }}
+                </span>
+              </td>
+
+              <td>{{ inv.invoiceDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ inv.customerName }}</td>
+              <td>{{ inv.items.length }}</td>
+
+              <td class="text-end fw-bold text-success">
+                {{ inv.totalAmount | number:'1.2-2' }}
+              </td>
+
+             <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="editInvoice(inv)" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <!-- PRINT BUTTON -->
+              <button class="btn btn-sm btn-success me-1" (click)="printInvoice(inv)" title="Print">
+                <i class="bi bi-printer"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteInvoice(inv.id!)" title="Delete">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+
+            </tr>
+
+            <tr *ngIf="invoiceList.length===0">
+              <td colspan="7" class="empty-state">
+                Koi invoice nahi
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

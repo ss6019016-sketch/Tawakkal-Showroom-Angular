@@ -1,0 +1,183 @@
+<div class="page-container animate-left">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-building"></i>
+    Warehouse Management
+  </div>
+
+  <div class="page-subtitle">
+    Manage warehouse locations and settings
+  </div>
+
+  <div class="form-list-layout">
+
+    <!-- ================= FORM ================= -->
+    <div class="form-panel">
+
+      <div class="erp-card animate-left">
+
+        <div class="erp-card-header primary">
+          {{ editMode ? 'Edit' : 'New' }} Warehouse
+        </div>
+
+        <div class="erp-card-body">
+
+          <form #wForm="ngForm" (ngSubmit)="onSubmit(wForm)">
+
+            <!-- NAME -->
+            <div class="form-group">
+              <label class="form-label">
+                Name <span class="required">*</span>
+              </label>
+
+              <input type="text"
+                     class="form-control"
+                     name="name"
+                     [(ngModel)]="warehouse.name"
+                     required>
+            </div>
+
+            <!-- LOCATION -->
+            <div class="form-group">
+              <label class="form-label">Location</label>
+
+              <input type="text"
+                     class="form-control"
+                     name="location"
+                     [(ngModel)]="warehouse.location">
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+              <label class="form-label">Description</label>
+
+              <textarea class="form-control"
+                        name="description"
+                        [(ngModel)]="warehouse.description"
+                        rows="2"></textarea>
+            </div>
+
+            <!-- DEFAULT -->
+            <div class="form-group flex"
+                 style="align-items:center; gap:8px">
+
+              <input type="checkbox"
+                     id="isDefault"
+                     name="isDefault"
+                     [(ngModel)]="warehouse.isDefault">
+
+              <label for="isDefault" class="form-label mb-0">
+                Default Warehouse
+              </label>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i>
+                {{ editMode ? 'Update' : 'Save' }}
+              </button>
+
+              <button type="button"
+                      class="btn btn-secondary"
+                      (click)="reset()">
+                Reset
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= LIST ================= -->
+    <div class="list-panel">
+
+      <div class="erp-card animate-right">
+
+        <div class="erp-card-header dark">
+          Warehouse List
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Location</th>
+                  <th>Default</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let w of warehouseList; let i = index"
+                    class="stagger">
+
+                  <td>{{ i + 1 }}</td>
+
+                  <td class="fw-700">
+                    <i class="bi bi-building text-primary"></i>
+                    {{ w.name }}
+                  </td>
+
+                  <td>{{ w.location }}</td>
+
+                  <td>
+                    <span *ngIf="w.isDefault"
+                          class="erp-badge success">
+                      Default
+                    </span>
+                  </td>
+
+                  <td>
+
+                    <button class="btn btn-sm btn-primary me-1"
+                            (click)="edit(w)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-sm btn-danger"
+                            (click)="delete(w.id!)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="warehouseList.length === 0">
+                  <td colspan="5" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Koi warehouse nahi mila</p>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

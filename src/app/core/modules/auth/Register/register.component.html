@@ -1,0 +1,93 @@
+<div class="login-container">
+
+  <!-- Background -->
+  <div class="bg-image"></div>
+  <div class="overlay"></div>
+
+  <!-- Card -->
+  <div class="login-card">
+
+    <h3 class="brand-title">
+      Tawakkal <span>ShowRoom</span>
+    </h3>
+
+    <p class="subtitle">Create your account</p>
+
+    <form (ngSubmit)="onRegister()">
+
+      <!-- Name -->
+      <div class="form-group">
+        <label>Full Name <span>*</span></label>
+        <input type="text" [(ngModel)]="name" name="name" placeholder="Enter name" required />
+        <small class="error" *ngIf="errors.name">{{ errors.name }}</small>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label>Email <span>*</span></label>
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Enter email" required />
+        <small class="error" *ngIf="errors.email">{{ errors.email }}</small>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label>Password <span>*</span></label>
+
+        <div class="password-box">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Enter password"
+            required
+          />
+
+          <button type="button" class="eye-btn" (click)="togglePassword()">
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+
+        <small class="error" *ngIf="errors.password">{{ errors.password }}</small>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label>Confirm Password <span>*</span></label>
+
+        <div class="password-box">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm password"
+            required
+          />
+
+          <button type="button" class="eye-btn" (click)="toggleConfirmPassword()">
+            <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+
+        <small class="error" *ngIf="errors.confirmPassword">
+          {{ errors.confirmPassword }}
+        </small>
+      </div>
+
+      <!-- Button -->
+      <button type="submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading" class="loading-content">
+          <span class="spinner"></span>
+          Creating...
+        </span>
+      </button>
+
+    </form>
+
+    <div class="login-footer">
+      Already have account?
+      <a routerLink="/login">Login</a>
+    </div>
+
+  </div>
+</div>

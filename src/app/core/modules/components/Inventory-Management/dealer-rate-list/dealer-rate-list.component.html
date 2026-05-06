@@ -1,0 +1,173 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-tags"></i>
+    Dealer Rate List
+  </div>
+  <div class="page-subtitle">
+    Manage dealer rates for products
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="form-list-layout">
+
+    <!-- LEFT FORM -->
+    <div class="form-panel">
+
+      <div class="erp-card">
+        <div class="erp-card-header info">
+          {{ editMode ? 'Edit' : 'New' }} Dealer Rate
+        </div>
+
+        <div class="erp-card-body">
+
+          <form #drForm="ngForm" (ngSubmit)="onSubmit(drForm)">
+
+            <!-- PRODUCT -->
+            <div class="form-group">
+              <label class="form-label">
+                Product <span class="required">*</span>
+              </label>
+
+              <select class="form-control form-select"
+                      name="productId"
+                      [(ngModel)]="dealerRate.productId"
+                      required
+                      (ngModelChange)="onProductSelect(dealerRate.productId)">
+                <option value="">-- Product --</option>
+                <option *ngFor="let p of productList" [value]="p.id">
+                  {{ p.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- DEALER NAME -->
+            <div class="form-group">
+              <label class="form-label">
+                Dealer Name <span class="required">*</span>
+              </label>
+
+              <input type="text"
+                     class="form-control"
+                     name="dealerName"
+                     [(ngModel)]="dealerRate.dealerName"
+                     required>
+            </div>
+
+            <!-- RATE -->
+            <div class="form-group">
+              <label class="form-label">
+                Rate <span class="required">*</span>
+              </label>
+
+              <input type="number"
+                     class="form-control"
+                     name="rate"
+                     [(ngModel)]="dealerRate.rate"
+                     required
+                     min="0">
+            </div>
+
+            <!-- NOTES -->
+            <div class="form-group">
+              <label class="form-label">Notes</label>
+              <textarea class="form-control"
+                        name="notes"
+                        [(ngModel)]="dealerRate.notes"
+                        rows="2"></textarea>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i>
+                {{ editMode ? 'Update' : 'Save' }}
+              </button>
+
+              <button type="button"
+                      class="btn btn-secondary"
+                      (click)="reset()">
+                Reset
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="list-panel">
+
+      <div class="erp-card">
+
+        <div class="erp-card-header dark">
+          Dealer Rates
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Dealer</th>
+                  <th class="text-right">Rate</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let dr of dealerRates; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ dr.productName }}</td>
+                  <td>{{ dr.dealerName }}</td>
+
+                  <td class="text-right fw-700">
+                    {{ dr.rate | number:'1.2-2' }}
+                  </td>
+
+                  <td>{{ dr.notes }}</td>
+
+                  <td>
+                    <button class="btn btn-sm btn-primary me-1"
+                            (click)="edit(dr)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-sm btn-danger"
+                            (click)="delete(dr.id!)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr *ngIf="dealerRates.length === 0">
+                  <td colspan="6" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Koi rate nahi mila</p>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,194 @@
+<div class="page-container animate-left">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-diagram-3"></i>
+    Chart of Accounts
+  </div>
+
+  <div class="page-subtitle">
+    Manage your financial account structure
+  </div>
+
+  <!-- ACTION -->
+  <div class="mb-3">
+    <button class="btn btn-outline-primary btn-sm" (click)="seed()">
+      <i class="bi bi-lightning"></i>
+      Default Accounts Load
+    </button>
+  </div>
+
+  <div class="form-list-layout">
+
+    <!-- ================= FORM ================= -->
+    <div class="form-panel erp-card animate-left">
+
+      <div class="erp-card-header primary">
+        {{ editMode ? 'Edit Account' : 'New Account' }}
+      </div>
+
+      <div class="erp-card-body">
+
+        <form #accForm="ngForm" (ngSubmit)="onSubmit(accForm)">
+
+          <div class="form-group">
+            <label class="form-label">Code <span class="required">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   name="code"
+                   [(ngModel)]="account.code"
+                   placeholder="e.g. 1001"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Account Name <span class="required">*</span></label>
+            <input type="text"
+                   class="form-control"
+                   name="name"
+                   [(ngModel)]="account.name"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Type <span class="required">*</span></label>
+            <select class="form-control"
+                    name="accountType"
+                    [(ngModel)]="account.accountType"
+                    required>
+
+              <option value="">Select Type</option>
+
+              <option *ngFor="let t of accountTypes"
+                      [value]="t.id">
+                {{ t.name }}
+              </option>
+
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control"
+                      rows="2"
+                      name="description"
+                      [(ngModel)]="account.description"></textarea>
+          </div>
+
+          <div class="form-actions">
+
+            <button type="submit"
+                    class="btn btn-primary flex-fill">
+
+              <i class="bi bi-check-lg"></i>
+              {{ editMode ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    (click)="reset()">
+              Reset
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ================= LIST ================= -->
+    <div class="list-panel animate-right">
+
+      <div *ngFor="let type of accountTypes"
+           class="erp-card mb-3">
+
+        <!-- HEADER -->
+        <div class="erp-card-header"
+             [ngClass]="{
+               'primary': type.id === 1,
+               'danger': type.id === 2,
+               'success': type.id === 3,
+               'warning': type.id === 4,
+               'dark': type.id === 5
+             }">
+
+          {{ type.name }} Accounts
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table">
+
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-right">Balance</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let a of getByType(type.id)" class="stagger">
+
+                  <td><code>{{ a.code }}</code></td>
+
+                  <td>
+
+                    {{ a.name }}
+
+                    <span *ngIf="a.isSystem"
+                          class="erp-badge gray ms-1">
+                      system
+                    </span>
+
+                  </td>
+
+                  <td class="text-right fw-700">
+                    {{ a.balance | number:'1.2-2' }}
+                  </td>
+
+                  <td class="flex gap-2">
+
+                    <button class="btn btn-primary btn-sm"
+                            (click)="edit(a)"
+                            [disabled]="a.isSystem">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm"
+                            (click)="delete(a)"
+                            [disabled]="a.isSystem">
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="getByType(type.id).length === 0">
+                  <td colspan="4" class="empty-state">
+                    No accounts found
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

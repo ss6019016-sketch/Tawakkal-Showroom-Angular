@@ -1,0 +1,329 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-sliders"></i>
+    Stock Adjustment
+  </div>
+
+  <div class="page-subtitle">
+    Manage stock in/out adjustments
+  </div>
+
+  <!-- TABS -->
+  <div class="erp-tabs mb-4">
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='form'"
+            (click)="activeTab='form'; reset()">
+
+      <i class="bi bi-plus-circle"></i>
+      New Adjustment
+    </button>
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='list'"
+            (click)="activeTab='list'">
+
+      <i class="bi bi-list-ul"></i>
+      List
+
+      <span class="badge-count">
+        {{ adjustmentList.length }}
+      </span>
+
+    </button>
+
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div *ngIf="activeTab==='form'">
+
+    <form #adjForm="ngForm" (ngSubmit)="onSubmit(adjForm)">
+
+      <!-- HEADER CARD -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header warning">
+          Adjustment Header
+        </div>
+
+        <div class="erp-card-body">
+
+          <div class="row">
+
+            <!-- ADJ NO -->
+            <div class="col-md-4 form-group">
+              <label class="form-label">Adjustment No</label>
+
+              <div class="input-group">
+                <input type="text"
+                       class="form-control readonly"
+                       name="adjNo"
+                       [(ngModel)]="adjustment.adjustmentNo"
+                       readonly>
+
+                <span class="input-group-text">
+                  <i class="bi bi-magic"></i>
+                </span>
+              </div>
+            </div>
+
+            <!-- DATE -->
+            <div class="col-md-4 form-group">
+              <label class="form-label">
+                Date <span class="required">*</span>
+              </label>
+
+              <input type="date"
+                     class="form-control"
+                     name="adjDate"
+                     [(ngModel)]="adjustment.adjustmentDate"
+                     required>
+            </div>
+
+            <!-- WAREHOUSE -->
+            <div class="col-md-4 form-group">
+              <label class="form-label">
+                Warehouse <span class="required">*</span>
+              </label>
+
+              <select class="form-control form-select"
+                      name="warehouseId"
+                      [(ngModel)]="adjustment.warehouseId"
+                      required>
+
+                <option value="">-- Select --</option>
+                <option *ngFor="let w of warehouseList"
+                        [value]="w.id">
+                  {{ w.name }}
+                </option>
+
+              </select>
+            </div>
+
+            <!-- NOTES -->
+            <div class="col-12 form-group">
+              <label class="form-label">Notes</label>
+
+              <textarea class="form-control"
+                        name="notes"
+                        [(ngModel)]="adjustment.notes"
+                        rows="2"></textarea>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ITEMS CARD -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header dark d-flex justify-between">
+          <span>Items</span>
+
+          <button type="button"
+                  class="btn btn-warning btn-sm"
+                  (click)="addItem()">
+
+            <i class="bi bi-plus-lg"></i>
+            Add
+          </button>
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table items-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Qty In (+)</th>
+                  <th>Qty Out (-)</th>
+                  <th>Rate</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let item of adjustment.items; let i = index">
+
+                  <td>{{ i + 1 }}</td>
+
+                  <td>
+                    <select class="form-control form-select"
+                            [name]="'prod_'+i"
+                            [(ngModel)]="item.productId"
+                            required
+                            (ngModelChange)="onProductSelect(i, item.productId)">
+
+                      <option value="">-- Product --</option>
+
+                      <option *ngFor="let p of productList"
+                              [value]="p.id">
+                        {{ p.name }}
+                      </option>
+
+                    </select>
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="item.qtyIn"
+                           [name]="'qin_'+i"
+                           min="0">
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="item.qtyOut"
+                           [name]="'qout_'+i"
+                           min="0">
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control readonly"
+                           [(ngModel)]="item.rate"
+                           [name]="'rate_'+i"
+                           readonly>
+                  </td>
+
+                  <td>
+                    <input type="text"
+                           class="form-control"
+                           [(ngModel)]="item.notes"
+                           [name]="'notes_'+i">
+                  </td>
+
+                  <td>
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            (click)="removeItem(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="adjustment.items.length === 0">
+                  <td colspan="7" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Item add karo</p>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="form-actions">
+
+        <button type="submit" class="btn btn-warning">
+          <i class="bi bi-check-lg"></i>
+          Save Adjustment
+        </button>
+
+        <button type="button"
+                class="btn btn-secondary"
+                (click)="reset()">
+          Reset
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- ================= LIST ================= -->
+  <div *ngIf="activeTab==='list'">
+
+    <div class="erp-card">
+
+      <div class="erp-card-header dark">
+        All Adjustments
+      </div>
+
+      <div class="erp-card-body p-0">
+
+        <div class="erp-table-wrapper">
+
+          <table class="erp-table">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Adj No</th>
+                <th>Date</th>
+                <th>Warehouse</th>
+                <th>Items</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let a of adjustmentList; let i = index">
+
+                <td>{{ i + 1 }}</td>
+
+                <td>
+                  <span class="erp-badge warning">
+                    {{ a.adjustmentNo }}
+                  </span>
+                </td>
+
+                <td>{{ a.adjustmentDate | date:'dd/MM/yyyy' }}</td>
+
+                <td>{{ a.warehouseName }}</td>
+
+                <td>
+                  <span class="erp-badge gray">
+                    {{ a.items.length }}
+                  </span>
+                </td>
+
+                <td>
+                  <button class="btn btn-sm btn-danger"
+                          (click)="delete(a.id!)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+
+              </tr>
+
+              <tr *ngIf="adjustmentList.length === 0">
+                <td colspan="6" class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <p>Koi adjustment nahi</p>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

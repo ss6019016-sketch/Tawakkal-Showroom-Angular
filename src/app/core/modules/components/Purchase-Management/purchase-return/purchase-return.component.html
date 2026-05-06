@@ -1,0 +1,145 @@
+<div class="page-container">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <i class="bi bi-arrow-return-left"></i>
+    Purchase Return
+  </div>
+  <div class="page-subtitle">
+    Select bill and process return items
+  </div>
+
+  <!-- BILL SELECT -->
+  <div class="erp-card mb-4">
+
+    <div class="erp-card-header danger">
+      Select a bill.
+    </div>
+
+    <div class="erp-card-body">
+
+      <div class="form-group">
+        <label class="form-label">Purchase Bill</label>
+
+        <select class="form-control"
+                [(ngModel)]="selectedBillId"
+                (ngModelChange)="onBillSelect()">
+
+          <option value="">-- Select a bill. --</option>
+
+          <option *ngFor="let b of billList" [value]="b.id">
+            {{ b.billNo }} | {{ b.vendorName }} | {{ b.billDate | date:'dd/MM/yyyy' }}
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RETURN TABLE -->
+  <div *ngIf="selectedBill" class="erp-card mb-4">
+
+    <div class="erp-card-header dark">
+      Return Items
+    </div>
+
+    <div class="erp-card-body p-0">
+
+      <div class="erp-table-wrapper">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Rate</th>
+              <th style="width:140px">Return Qty</th>
+              <th class="text-right">Return Amount</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let item of returnItems; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>{{ item.productName }}</td>
+
+              <td>{{ item.rate | number:'1.2-2' }}</td>
+
+              <td>
+                <input type="number"
+                       class="form-control"
+                       [(ngModel)]="item.returnQty"
+                       min="0"
+                       (ngModelChange)="calcReturnTotal()">
+              </td>
+
+              <td class="text-right fw-700 text-danger">
+                {{ item.returnQty * item.rate | number:'1.2-2' }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="4" class="text-right">Return Total:</td>
+              <td class="text-right">
+                {{ returnTotal | number:'1.2-2' }}
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- NOTES + ACTIONS -->
+  <div *ngIf="selectedBill" class="erp-card mb-5">
+
+    <div class="erp-card-body">
+
+      <div class="form-group">
+        <label class="form-label">Return Note (Optional)</label>
+
+        <textarea class="form-control"
+                  rows="2"
+                  [(ngModel)]="returnNote"
+                  placeholder="Return ki wajah..."></textarea>
+      </div>
+
+      <div class="form-actions">
+
+        <button class="btn btn-danger" (click)="submitReturn()">
+          <i class="bi bi-arrow-return-left"></i>
+          Return Submit
+        </button>
+
+        <button class="btn btn-light" (click)="resetReturn()">
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!selectedBill" class="empty-state">
+    <i class="bi bi-receipt"></i>
+    <p>Select any bill from above.</p>
+  </div>
+
+</div>

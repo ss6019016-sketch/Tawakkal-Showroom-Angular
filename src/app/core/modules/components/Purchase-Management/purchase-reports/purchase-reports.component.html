@@ -1,0 +1,156 @@
+<div class="page-container">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <i class="bi bi-bar-chart-line"></i>
+    Purchase Reports
+  </div>
+  <div class="page-subtitle">
+    Date wise purchase bills summary report
+  </div>
+
+  <!-- FILTER CARD -->
+  <div class="erp-card mb-4">
+    <div class="erp-card-header primary">
+      Date Filter
+    </div>
+
+    <div class="erp-card-body">
+      <div class="row">
+
+        <div class="col-md-3 form-group">
+          <label class="form-label">From Date</label>
+          <input type="date" class="form-control" [(ngModel)]="fromDate">
+        </div>
+
+        <div class="col-md-3 form-group">
+          <label class="form-label">To Date</label>
+          <input type="date" class="form-control" [(ngModel)]="toDate">
+        </div>
+
+        <div class="col-md-6 form-group flex gap-2 align-items-end">
+
+          <button class="btn btn-primary" (click)="filterByDate()">
+            <i class="bi bi-search"></i> Filter
+          </button>
+
+          <button class="btn btn-light" (click)="resetFilter()">
+            Reset
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row mb-4">
+
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <i class="bi bi-receipt"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ filteredList.length }}</div>
+          <div class="stat-label">Total Bills</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ totalAmount | number:'1.2-2' }}</div>
+          <div class="stat-label">Total Amount</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="erp-card">
+
+    <div class="erp-card-header dark">
+      Bill Summary
+    </div>
+
+    <div class="erp-card-body p-0">
+
+      <div class="erp-table-wrapper">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Bill No</th>
+              <th>Date</th>
+              <th>Vendor</th>
+              <th>Items</th>
+              <th class="text-right">Amount</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let b of filteredList; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>
+                <span class="erp-badge primary">
+                  {{ b.billNo }}
+                </span>
+              </td>
+
+              <td>{{ b.billDate | date:'dd/MM/yyyy' }}</td>
+
+              <td>{{ b.vendorName }}</td>
+
+              <td>
+                <span class="erp-badge gray">
+                  {{ b.items.length }} Items
+                </span>
+              </td>
+
+              <td class="text-right fw-700">
+                {{ b.totalAmount | number:'1.2-2' }}
+              </td>
+
+            </tr>
+
+            <tr *ngIf="filteredList.length === 0">
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <p>No data found</p>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="5" class="text-right">Grand Total:</td>
+              <td class="text-right">
+                {{ totalAmount | number:'1.2-2' }}
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

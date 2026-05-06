@@ -1,0 +1,202 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-journal-richtext"></i>
+    Cash Book
+  </div>
+
+  <div class="page-subtitle">
+    Cash & bank transaction ledger
+  </div>
+
+  <!-- FILTER -->
+  <div class="erp-card mb-4">
+
+    <div class="erp-card-header dark">
+      Date Filter
+    </div>
+
+    <div class="erp-card-body">
+
+      <div class="row">
+
+        <div class="col-md-3 form-group">
+          <label class="form-label">From</label>
+          <input type="date"
+                 class="form-control"
+                 [(ngModel)]="fromDate">
+        </div>
+
+        <div class="col-md-3 form-group">
+          <label class="form-label">To</label>
+          <input type="date"
+                 class="form-control"
+                 [(ngModel)]="toDate">
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end gap-2">
+
+          <button class="btn btn-success"
+                  (click)="filter()">
+
+            <i class="bi bi-search"></i>
+            Filter
+          </button>
+
+          <button class="btn btn-secondary"
+                  (click)="reset()">
+            Reset
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row mb-4">
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon green">
+          <i class="bi bi-arrow-down-circle"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Total Cash In</div>
+          <div class="stat-value text-success">
+            {{ totalDebit | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon red">
+          <i class="bi bi-arrow-up-circle"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Total Cash Out</div>
+          <div class="stat-value text-danger">
+            {{ totalCredit | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon blue">
+          <i class="bi bi-wallet2"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Net Balance</div>
+
+          <div class="stat-value"
+               [class.text-success]="balance >= 0"
+               [class.text-danger]="balance < 0">
+
+            {{ balance | number:'1.2-2' }}
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="erp-card">
+
+    <div class="erp-card-header dark">
+      Cash & Bank Transactions
+    </div>
+
+    <div class="erp-card-body p-0">
+
+      <div class="erp-table-wrapper">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Account</th>
+              <th>Description</th>
+              <th class="text-right">Debit (In)</th>
+              <th class="text-right">Credit (Out)</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let e of entries; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>
+                <code>{{ e.accountCode }}</code>
+                {{ e.accountName }}
+              </td>
+
+              <td>{{ e.description }}</td>
+
+              <td class="text-right text-success fw-700">
+                {{ e.debit > 0 ? (e.debit | number:'1.2-2') : '' }}
+              </td>
+
+              <td class="text-right text-danger fw-700">
+                {{ e.credit > 0 ? (e.credit | number:'1.2-2') : '' }}
+              </td>
+
+            </tr>
+
+            <tr *ngIf="entries.length === 0">
+              <td colspan="5" class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Koi transaction nahi mila</p>
+              </td>
+            </tr>
+
+          </tbody>
+
+          <tfoot>
+            <tr class="grand-total-row">
+
+              <td colspan="3" class="text-right">
+                Total:
+              </td>
+
+              <td class="text-right text-success">
+                {{ totalDebit | number:'1.2-2' }}
+              </td>
+
+              <td class="text-right text-danger">
+                {{ totalCredit | number:'1.2-2' }}
+              </td>
+
+            </tr>
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

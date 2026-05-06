@@ -1,0 +1,71 @@
+<!-- <div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Trial Balance</h2>
+      <p class="page-subtitle">Total Debit = Total Credit</p>
+    </div>
+    <div class="balance-indicator" [class.balanced]="isBalanced" [class.unbalanced]="!isBalanced">
+      <i class="fas" [class.fa-check-circle]="isBalanced" [class.fa-exclamation-triangle]="!isBalanced"></i>
+      {{ isBalanced ? 'Balanced' : 'Unbalanced!' }}
+    </div>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-row">
+      <div class="form-group">
+        <label>From Date</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+      </div>
+      <div class="form-group">
+        <label>To Date</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+      </div>
+      <div class="form-group align-end">
+        <button class="btn btn-primary" (click)="loadData()" [disabled]="loading">
+          <i class="fas fa-search"></i> {{ loading ? 'Loading...' : 'Generate' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="table trial-table">
+      <thead>
+        <tr>
+          <th>Account Code</th>
+          <th>Account Name</th>
+          <th>Type</th>
+          <th class="text-right">Debit (Dr)</th>
+          <th class="text-right">Credit (Cr)</th>
+          <th class="text-right">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of entries">
+          <td><span class="code-badge">{{ e.accountCode }}</span></td>
+          <td>{{ e.accountName }}</td>
+          <td><span class="type-badge" [class]="getTypeClass(e.accountType)">{{ e.accountType }}</span></td>
+          <td class="text-right">{{ e.totalDebit > 0 ? (e.totalDebit | number:'1.2-2') : '—' }}</td>
+          <td class="text-right">{{ e.totalCredit > 0 ? (e.totalCredit | number:'1.2-2') : '—' }}</td>
+          <td class="text-right" [class.positive]="e.balance >= 0" [class.negative]="e.balance < 0">
+            <strong>{{ e.balance | number:'1.2-2' }}</strong>
+          </td>
+        </tr>
+        <tr *ngIf="entries.length === 0">
+          <td colspan="6" class="empty-state">No data found. Post some vouchers first.</td>
+        </tr>
+      </tbody>
+      <tfoot *ngIf="entries.length > 0">
+        <tr class="totals-row grand-total" [class.balanced]="isBalanced" [class.unbalanced]="!isBalanced">
+          <td colspan="3"><strong>GRAND TOTAL</strong></td>
+          <td class="text-right"><strong>{{ totalDebit | number:'1.2-2' }}</strong></td>
+          <td class="text-right"><strong>{{ totalCredit | number:'1.2-2' }}</strong></td>
+          <td class="text-right">
+            <strong *ngIf="isBalanced" class="text-success">✓ Balanced</strong>
+            <strong *ngIf="!isBalanced" class="text-danger">✗ Difference: {{ (totalDebit - totalCredit) | number:'1.2-2' }}</strong>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div> -->

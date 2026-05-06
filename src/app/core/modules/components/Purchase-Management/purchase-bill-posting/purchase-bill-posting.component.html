@@ -1,0 +1,343 @@
+<div class="page-container">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <i class="bi bi-receipt"></i>
+    Purchase Bill Posting
+  </div>
+  <div class="page-subtitle">
+    Create, manage and post purchase bills
+  </div>
+
+  <!-- TABS -->
+  <div class="erp-tabs mb-4">
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='form'"
+            (click)="activeTab='form'; reset()">
+
+      <i class="bi bi-plus-circle"></i>
+      {{ editMode ? 'Edit Bill' : 'New Bill' }}
+
+    </button>
+
+    <button class="erp-tab"
+            [class.active]="activeTab==='list'"
+            (click)="activeTab='list'">
+
+      <i class="bi bi-list-ul"></i>
+      Bill List
+
+      <span class="badge-count ms-2">
+        {{ billList.length }}
+      </span>
+
+    </button>
+
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div *ngIf="activeTab==='form'">
+
+    <form #billForm="ngForm" (ngSubmit)="onSubmit(billForm)">
+
+      <!-- HEADER CARD -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header primary">
+          Bill Header
+        </div>
+
+        <div class="erp-card-body">
+
+          <div class="row">
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Bill No</label>
+
+              <div class="input-group">
+                <input type="text"
+                       class="form-control readonly"
+                       name="billNo"
+                       [(ngModel)]="bill.billNo"
+                       readonly>
+
+                <span class="input-group-text">
+                  <i class="bi bi-magic"></i> Auto
+                </span>
+              </div>
+
+            </div>
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Bill Date <span class="required">*</span></label>
+              <input type="date"
+                     class="form-control"
+                     name="billDate"
+                     [(ngModel)]="bill.billDate"
+                     required>
+            </div>
+
+            <div class="col-md-4 form-group">
+              <label class="form-label">Vendor <span class="required">*</span></label>
+
+              <select class="form-control"
+                      name="vendorId"
+                      [(ngModel)]="bill.vendorId"
+                      required>
+
+                <option value="">-- Vendor Select Karo --</option>
+
+                <option *ngFor="let v of vendorList" [value]="v.id">
+                  {{ v.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <div class="col-12 form-group">
+              <label class="form-label">Notes</label>
+
+              <textarea class="form-control"
+                        rows="2"
+                        name="notes"
+                        [(ngModel)]="bill.notes"></textarea>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ITEMS CARD -->
+      <div class="erp-card mb-4">
+
+        <div class="erp-card-header dark flex">
+
+          <span><i class="bi bi-box"></i> Items</span>
+
+          <button type="button" class="btn btn-success btn-sm"
+                  (click)="addItem()">
+
+            <i class="bi bi-plus-lg"></i>
+            Item Add
+
+          </button>
+
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table items-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Qty</th>
+                  <th>Rate</th>
+                  <th class="text-right">Amount</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let item of bill.items; let i = index">
+
+                  <td>{{ i + 1 }}</td>
+
+                  <td>
+                    <select class="form-control"
+                            (change)="onProductSelect(i, $any($event.target).value)">
+
+                      <option value="">-- Select --</option>
+
+                      <option *ngFor="let p of productList"
+                              [value]="p.id"
+                              [selected]="item.productName === p.name">
+
+                        {{ p.name }} ({{ p.rate | number:'1.2-2' }})
+
+                      </option>
+
+                    </select>
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control"
+                           [(ngModel)]="item.qty"
+                           [name]="'qty_'+i"
+                           min="1"
+                           (ngModelChange)="calcTotal()">
+                  </td>
+
+                  <td>
+                    <input type="number"
+                           class="form-control readonly"
+                           [(ngModel)]="item.rate"
+                           [name]="'rate_'+i"
+                           readonly>
+                  </td>
+
+                  <td class="text-right fw-700">
+                    {{ getAmount(item) | number:'1.2-2' }}
+                  </td>
+
+                  <td>
+                    <button type="button"
+                            class="btn btn-danger btn-sm"
+                            (click)="removeItem(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="bill.items.length===0">
+                  <td colspan="6">
+                    <div class="empty-state">
+                      <i class="bi bi-box"></i>
+                      <p>Add Items First</p>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+
+              <tfoot>
+                <tr class="grand-total-row">
+                  <td colspan="4" class="text-right">Grand Total:</td>
+                  <td class="text-right">{{ bill.totalAmount | number:'1.2-2' }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="form-actions">
+
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-lg"></i>
+          {{ editMode ? 'Update Bill' : 'Save Bill' }}
+        </button>
+
+        <button type="button" class="btn btn-light" (click)="reset()">
+          Reset
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- ================= LIST ================= -->
+  <div *ngIf="activeTab==='list'">
+
+    <div class="erp-card">
+
+      <div class="erp-card-header dark">
+        All Purchase Bills
+      </div>
+
+      <div class="erp-card-body p-0">
+
+        <div class="erp-table-wrapper">
+
+          <table class="erp-table">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Bill No</th>
+                <th>Date</th>
+                <th>Vendor</th>
+                <th>Items</th>
+                <th class="text-right">Total</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let b of billList; let i = index">
+
+                <td>{{ i + 1 }}</td>
+
+                <td>
+                  <span class="erp-badge primary">
+                    {{ b.billNo }}
+                  </span>
+                </td>
+
+                <td>{{ b.billDate | date:'dd/MM/yyyy' }}</td>
+
+                <td>{{ b.vendorName }}</td>
+
+                <td>
+                  <span class="erp-badge gray">
+                    {{ b.items.length }}
+                  </span>
+                </td>
+
+                <td class="text-right text-success fw-700">
+                  {{ b.totalAmount | number:'1.2-2' }}
+                </td>
+
+                <td class="flex gap-2">
+
+                  <button class="btn btn-primary btn-sm"
+                          (click)="editBill(b)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <button class="btn btn-info btn-sm"
+                          (click)="printBill(b)">
+                    <i class="bi bi-printer"></i>
+                  </button>
+
+                  <button class="btn btn-danger btn-sm"
+                          (click)="deleteBill(b.id!)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="billList.length===0">
+                <td colspan="7">
+                  <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No Bills Found</p>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,224 @@
+<div class="page-container animate-left">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title animate-left">
+    <i class="bi bi-people"></i>
+    Users
+  </div>
+
+  <div class="page-subtitle">
+    System users management (create, update, status control)
+  </div>
+
+  <!-- FORM + LIST LAYOUT -->
+  <div class="form-list-layout">
+
+    <!-- ================= FORM PANEL ================= -->
+    <div class="form-panel animate-left">
+
+      <div class="erp-card">
+
+        <div class="erp-card-header primary">
+          <span>
+            <i class="bi bi-person-plus"></i>
+            {{ editMode ? 'Edit User' : 'New User' }}
+          </span>
+        </div>
+
+        <div class="erp-card-body">
+
+          <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+
+            <!-- NAME -->
+            <div class="form-group">
+              <label class="form-label">
+                Full Name <span class="required">*</span>
+              </label>
+
+              <input type="text"
+                     class="form-control"
+                     name="name"
+                     [(ngModel)]="user.name"
+                     required
+                     placeholder="User ka naam">
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group">
+              <label class="form-label">
+                Email <span class="required">*</span>
+              </label>
+
+              <input type="email"
+                     class="form-control"
+                     name="email"
+                     [(ngModel)]="user.email"
+                     required
+                     placeholder="email@example.com">
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+              <label class="form-label">
+                Password
+                <span *ngIf="!editMode" class="required">*</span>
+
+                <small *ngIf="editMode" class="text-muted">
+                  (optional update)
+                </small>
+              </label>
+
+              <div class="input-group">
+
+                <input [type]="showPassword ? 'text' : 'password'"
+                       class="form-control"
+                       name="password"
+                       [(ngModel)]="user.password"
+                       [required]="!editMode"
+                       placeholder="Password">
+
+                <span class="input-group-text cursor-pointer"
+                      (click)="showPassword = !showPassword">
+
+                  <i class="bi"
+                     [class.bi-eye]="!showPassword"
+                     [class.bi-eye-slash]="showPassword"></i>
+
+                </span>
+
+              </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+
+              <button type="submit" class="btn btn-primary w-full">
+
+                <i class="bi bi-check-lg"></i>
+
+                {{ editMode ? 'Update User' : 'Create User' }}
+
+              </button>
+
+              <button type="button"
+                      class="btn btn-light w-full"
+                      (click)="reset()">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Reset
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= LIST PANEL ================= -->
+    <div class="list-panel animate-right">
+
+      <div class="erp-card">
+
+        <div class="erp-card-header dark flex">
+
+          <span>
+            <i class="bi bi-people"></i>
+            All Users
+          </span>
+
+          <span class="erp-badge gray">
+            {{ userList.length }} users
+          </span>
+
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody class="stagger">
+
+                <tr *ngFor="let u of userList; let i = index">
+
+                  <td class="text-muted fs-sm">{{ i + 1 }}</td>
+
+                  <td class="fw-600">
+                    <i class="bi bi-person-circle text-primary me-1"></i>
+                    {{ u.name }}
+                  </td>
+
+                  <td class="text-muted">{{ u.email }}</td>
+
+                  <td>
+
+                    <span class="erp-badge cursor-pointer"
+                          [ngClass]="u.isActive ? 'success' : 'danger'"
+                          (click)="toggleStatus(u.id!)">
+
+                      {{ u.isActive ? 'Active' : 'Inactive' }}
+
+                    </span>
+
+                  </td>
+
+                  <td class="text-muted fs-sm">
+                    {{ u.createdOn | date:'dd/MM/yyyy' }}
+                  </td>
+
+                  <td class="flex gap-2">
+
+                    <button class="btn btn-primary btn-sm"
+                            (click)="edit(u)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm"
+                            (click)="delete(u.id!)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+            <!-- EMPTY STATE -->
+            <div *ngIf="userList.length === 0" class="empty-state">
+
+              <i class="bi bi-people"></i>
+              <p>No users found — create first user</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

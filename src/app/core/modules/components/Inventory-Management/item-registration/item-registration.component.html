@@ -1,0 +1,181 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-box-seam"></i>
+    Item Registration
+  </div>
+
+  <div class="page-subtitle">
+    Manage product/items and their rates
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="form-list-layout">
+
+    <!-- LEFT FORM -->
+    <div class="form-panel">
+
+      <div class="erp-card">
+
+        <div class="erp-card-header primary">
+          {{ editMode ? 'Edit Item' : 'New Item' }}
+        </div>
+
+        <div class="erp-card-body">
+
+          <form #itemForm="ngForm" (ngSubmit)="onSubmit(itemForm)">
+
+            <!-- NAME -->
+            <div class="form-group">
+              <label class="form-label">
+                Item Name <span class="required">*</span>
+              </label>
+
+              <input type="text"
+                     class="form-control"
+                     name="name"
+                     [(ngModel)]="product.name"
+                     required>
+            </div>
+
+            <!-- RATE -->
+            <div class="form-group">
+              <label class="form-label">
+                Purchase Rate <span class="required">*</span>
+              </label>
+
+              <input type="number"
+                     class="form-control"
+                     name="rate"
+                     [(ngModel)]="product.rate"
+                     required
+                     min="0">
+            </div>
+
+            <!-- UNIT -->
+            <div class="form-group">
+              <label class="form-label">Unit</label>
+
+              <input type="text"
+                     class="form-control"
+                     name="unit"
+                     [(ngModel)]="product.unit"
+                     placeholder="Pcs, Kg, Box">
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+              <label class="form-label">Description</label>
+
+              <textarea class="form-control"
+                        name="description"
+                        [(ngModel)]="product.description"
+                        rows="2"></textarea>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i>
+                {{ editMode ? 'Update' : 'Save' }}
+              </button>
+
+              <button type="button"
+                      class="btn btn-secondary"
+                      (click)="reset()">
+                Reset
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="list-panel">
+
+      <div class="erp-card">
+
+        <div class="erp-card-header dark">
+          Item List
+        </div>
+
+        <div class="erp-card-body p-0">
+
+          <div class="erp-table-wrapper">
+
+            <table class="erp-table">
+
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th class="text-right">Rate</th>
+                  <th>Unit</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let p of productList; let i = index">
+
+                  <td>{{ i + 1 }}</td>
+
+                  <td class="fw-700">
+                    {{ p.name }}
+                  </td>
+
+                  <td class="text-right fw-700">
+                    {{ p.rate | number:'1.2-2' }}
+                  </td>
+
+                  <td>{{ p.unit }}</td>
+
+                  <td>{{ p.description }}</td>
+
+                  <td>
+
+                    <button class="btn btn-sm btn-primary me-1"
+                            (click)="edit(p)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-sm btn-danger"
+                            (click)="delete(p.id!)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="productList.length === 0">
+                  <td colspan="6" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Koi item nahi mila</p>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

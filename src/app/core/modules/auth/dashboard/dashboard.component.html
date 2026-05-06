@@ -1,0 +1,311 @@
+<div class="page-container">
+
+  <!-- HEADER -->
+  <div class="flex justify-content-between align-items-center mb-4 animate-left">
+
+    <div>
+      <div class="page-title mb-0">
+        <i class="bi bi-speedometer2"></i>
+        {{ getGreeting() }}, {{ currentUser }}!
+      </div>
+
+      <div class="page-subtitle">
+        {{ currentDate | date:'EEEE, dd MMMM yyyy' }}
+      </div>
+    </div>
+
+    <div>
+      <span class="erp-badge success">
+        <span class="status-dot active"></span>
+        System Online
+      </span>
+    </div>
+
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="erp-spinner">
+    <div class="spinner"></div>
+    <div>Loading dashboard...</div>
+  </div>
+
+  <div *ngIf="!loading && data">
+
+    <!-- ================= TODAY SUMMARY ================= -->
+    <div class="section-divider"></div>
+
+    <div class="page-subtitle mb-3">
+      Aaj Ka Summary
+    </div>
+
+    <div class="row stagger mb-4">
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="bi bi-cart-check"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.totalSalesToday | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Today Sales</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="bi bi-bag-check"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.totalPurchaseToday | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Today Purchase</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="bi bi-cash-stack"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.cashBalance | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Cash Balance</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon yellow">
+            <i class="bi bi-boxes"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.stockValue | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Stock Value</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= MONTHLY SUMMARY ================= -->
+
+    <div class="page-subtitle mb-3">
+      Is Mahine Ka Summary
+    </div>
+
+    <div class="row stagger mb-4">
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="bi bi-graph-up"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.totalSalesMonth | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Monthly Sales</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="bi bi-graph-down"></i>
+          </div>
+          <div>
+            <div class="stat-value">
+              {{ data.totalPurchaseMonth | number:'1.0-0' }}
+            </div>
+            <div class="stat-label">Monthly Purchase</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="bi bi-cash"></i>
+          </div>
+          <div>
+            <div class="stat-value"
+                 [class.text-success]="data.totalSalesMonth >= data.totalPurchaseMonth"
+                 [class.text-danger]="data.totalSalesMonth < data.totalPurchaseMonth">
+
+              {{ (data.totalSalesMonth - data.totalPurchaseMonth) | number:'1.0-0' }}
+
+            </div>
+            <div class="stat-label">Net Profit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="bi bi-percent"></i>
+          </div>
+          <div>
+            <div class="stat-value text-warning">
+              {{ data.totalSalesMonth > 0 ?
+                (((data.totalSalesMonth - data.totalPurchaseMonth) / data.totalSalesMonth) * 100 | number:'1.1-1') + '%'
+                : '0%' }}
+            </div>
+            <div class="stat-label">Profit Margin</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= COUNTS ================= -->
+    <div class="row stagger mb-4">
+
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="bi bi-people"></i></div>
+          <div>
+            <div class="stat-value">{{ data.totalCustomers }}</div>
+            <div class="stat-label">Customers</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="bi bi-truck"></i></div>
+          <div>
+            <div class="stat-value">{{ data.totalVendors }}</div>
+            <div class="stat-label">Vendors</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon yellow"><i class="bi bi-box-seam"></i></div>
+          <div>
+            <div class="stat-value">{{ data.totalProducts }}</div>
+            <div class="stat-label">Products</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="bi bi-person-badge"></i></div>
+          <div>
+            <div class="stat-value">{{ data.totalUsers }}</div>
+            <div class="stat-label">Users</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= RECENT ================= -->
+    <div class="row stagger">
+
+      <!-- SALES -->
+      <div class="col-md-6">
+
+        <div class="erp-card">
+
+          <div class="erp-card-header success">
+            <i class="bi bi-receipt"></i> Recent Sales
+          </div>
+
+          <div class="erp-card-body p-0">
+
+            <table class="erp-table">
+
+              <tbody>
+
+                <tr *ngFor="let s of data.recentSales">
+
+                  <td>
+                    <span class="erp-badge success">{{ s.no }}</span>
+                  </td>
+
+                  <td>{{ s.partyName }}</td>
+
+                  <td class="text-muted fs-sm">
+                    {{ s.date | date:'dd/MM/yy' }}
+                  </td>
+
+                  <td class="text-right text-success fw-700">
+                    {{ s.amount | number:'1.0-0' }}
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- PURCHASE -->
+      <div class="col-md-6">
+
+        <div class="erp-card">
+
+          <div class="erp-card-header danger">
+            <i class="bi bi-receipt"></i> Recent Purchases
+          </div>
+
+          <div class="erp-card-body p-0">
+
+            <table class="erp-table">
+
+              <tbody>
+
+                <tr *ngFor="let p of data.recentPurchases">
+
+                  <td>
+                    <span class="erp-badge danger">{{ p.no }}</span>
+                  </td>
+
+                  <td>{{ p.partyName }}</td>
+
+                  <td class="text-muted fs-sm">
+                    {{ p.date | date:'dd/MM/yy' }}
+                  </td>
+
+                  <td class="text-right text-danger fw-700">
+                    {{ p.amount | number:'1.0-0' }}
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

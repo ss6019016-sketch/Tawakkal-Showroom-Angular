@@ -1,0 +1,192 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-boxes"></i>
+    Stock In Hand
+  </div>
+
+  <div class="page-subtitle">
+    Current inventory stock status across warehouses
+  </div>
+
+  <!-- FILTER -->
+  <div class="erp-card mb-4">
+
+    <div class="erp-card-header success">
+      Filters
+    </div>
+
+    <div class="erp-card-body">
+
+      <div class="row">
+
+        <div class="col-md-4 form-group">
+          <label class="form-label">Warehouse Filter</label>
+
+          <select class="form-control form-select"
+                  [(ngModel)]="selectedWarehouseId"
+                  (ngModelChange)="load()">
+
+            <option value="">----All Warehouses----</option>
+
+            <option *ngFor="let w of warehouseList"
+                    [value]="w.id">
+              {{ w.name }}
+            </option>
+
+          </select>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end">
+
+          <button class="btn btn-success"
+                  (click)="load()">
+
+            <i class="bi bi-arrow-clockwise"></i>
+            Refresh
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="row mb-4">
+
+    <div class="col-md-3">
+      <div class="stat-card">
+
+        <div class="stat-icon green">
+          <i class="bi bi-box"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Total Items</div>
+          <div class="stat-value text-success">
+            {{ stocks.length }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card">
+
+        <div class="stat-icon blue">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Stock Value</div>
+          <div class="stat-value text-primary">
+            {{ totalValue | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="erp-card">
+
+    <div class="erp-card-header dark">
+      Stock Summary
+    </div>
+
+    <div class="erp-card-body p-0">
+
+      <div class="erp-table-wrapper">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Warehouse</th>
+              <th>Unit</th>
+              <th class="text-right">Qty In</th>
+              <th class="text-right">Qty Out</th>
+              <th class="text-right">Balance</th>
+              <th class="text-right">Rate</th>
+              <th class="text-right">Stock Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let s of stocks; let i = index"
+                [class.table-warning]="s.stockBalance < 10">
+
+              <td>{{ i + 1 }}</td>
+
+              <td class="fw-700">
+                {{ s.productName }}
+              </td>
+
+              <td>{{ s.warehouseName }}</td>
+
+              <td>{{ s.unit }}</td>
+
+              <td class="text-right text-success fw-700">
+                {{ s.totalQtyIn | number:'1.2-2' }}
+              </td>
+
+              <td class="text-right text-danger fw-700">
+                {{ s.totalQtyOut | number:'1.2-2' }}
+              </td>
+
+              <td class="text-right fw-800"
+                  [class.text-danger]="s.stockBalance < 5"
+                  [class.text-success]="s.stockBalance >= 5">
+
+                {{ s.stockBalance | number:'1.2-2' }}
+
+              </td>
+
+              <td class="text-right">
+                {{ s.rate | number:'1.2-2' }}
+              </td>
+
+              <td class="text-right fw-700">
+                {{ s.stockValue | number:'1.2-2' }}
+              </td>
+
+            </tr>
+
+            <tr *ngIf="stocks.length === 0">
+              <td colspan="9" class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Koi stock nahi mila</p>
+              </td>
+            </tr>
+
+          </tbody>
+
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="8" class="text-right">Total Value:</td>
+              <td class="text-right">
+                {{ totalValue | number:'1.2-2' }}
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

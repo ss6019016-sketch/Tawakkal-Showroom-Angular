@@ -1,0 +1,139 @@
+<div class="sidebar" [ngClass]="{'collapsed': isCollapsed}">
+  
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <h6 class="header-title" *ngIf="!isCollapsed">Main Menu :</h6>
+    <button class="btn-collapse" (click)="toggleCollapse()" title="Toggle Menu">
+      <i class="bi" [ngClass]="isCollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+    </button>
+  </div>
+
+  <!-- Navigation Tree -->
+  <nav class="sidebar-nav">
+    <ul class="nav-tree">
+
+      <!-- Dashboard -->
+      <li class="nav-item">
+        <a routerLink="/dashboard" 
+           routerLinkActive="active" 
+           class="nav-link"
+           title="Dashboard">
+          <i class="bi bi-speedometer2"></i>
+          <span *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Setup -->
+      <li class="nav-item has-children" [class.expanded]="activeMenu === 'setup'">
+        <button class="nav-link nav-toggle" 
+                (click)="toggleMenu('setup')"
+                title="Setup Management">
+          <div class="nav-link-content">
+            <i class="bi bi-gear-fill"></i>
+            <span *ngIf="!isCollapsed">Setup Management</span>
+          </div>
+          <i class="toggle-icon bi" 
+             [ngClass]="activeMenu === 'setup' ? 'bi-dash-square' : 'bi-plus-square'"
+             *ngIf="!isCollapsed"></i>
+        </button>
+
+       <ul class="nav-children" [class.open]="activeMenu === 'setup' && !isCollapsed">
+          <li><a routerLink="/users" routerLinkActive="active" class="nav-link">Users</a></li>
+          <li><a routerLink="/roles" routerLinkActive="active" class="nav-link">Roles</a></li>
+        </ul>
+      </li>
+
+      <!-- Purchase -->
+      <li class="nav-item has-children" [class.expanded]="activeMenu === 'purchase'">
+        <button class="nav-link nav-toggle" 
+                (click)="toggleMenu('purchase')"
+                title="Purchase Management">
+          <div class="nav-link-content">
+            <i class="bi bi-cart-fill"></i>
+            <span *ngIf="!isCollapsed">Purchase Management</span>
+          </div>
+          <i class="toggle-icon bi" 
+             [ngClass]="activeMenu === 'purchase' ? 'bi-dash-square' : 'bi-plus-square'"
+             *ngIf="!isCollapsed"></i>
+        </button>
+
+        <ul class="nav-children" [class.open]="activeMenu === 'purchase' && !isCollapsed">
+          <li><a routerLink="/vendor-master" routerLinkActive="active" class="nav-link">Vendor Master</a></li>
+          <li><a routerLink="/purchase-bill-posting" routerLinkActive="active" class="nav-link">Purchase Bill Posting</a></li>
+          <li><a routerLink="/purchase-return" routerLinkActive="active" class="nav-link">Purchase Return</a></li>
+          <li><a routerLink="/purchase-reports" routerLinkActive="active" class="nav-link">Purchase Reports</a></li>
+        </ul>
+      </li>
+
+      <!-- Sales -->
+      <li class="nav-item has-children" [class.expanded]="activeMenu === 'sales'">
+        <button class="nav-link nav-toggle" 
+                (click)="toggleMenu('sales')"
+                title="Sales Management">
+          <div class="nav-link-content">
+            <i class="bi bi-shop"></i>
+            <span *ngIf="!isCollapsed">Sales Management</span>
+          </div>
+          <i class="toggle-icon bi" 
+             [ngClass]="activeMenu === 'sales' ? 'bi-dash-square' : 'bi-plus-square'"
+             *ngIf="!isCollapsed"></i>
+        </button>
+
+       <ul class="nav-children" [class.open]="activeMenu === 'sales' && !isCollapsed">
+          <li><a routerLink="/customer-master" routerLinkActive="active" class="nav-link">Customer Master</a></li>
+          <li><a routerLink="/sales-invoice" routerLinkActive="active" class="nav-link">Sales Invoice</a></li>
+          <li><a routerLink="/sales-return" routerLinkActive="active" class="nav-link">Sales Return</a></li>
+          <li><a routerLink="/sales-reports" routerLinkActive="active" class="nav-link">Sales Reports</a></li>
+        </ul>
+      </li>
+
+      <!-- Accounts -->
+      <li class="nav-item has-children" [class.expanded]="activeMenu === 'accounts'">
+        <button class="nav-link nav-toggle" 
+                (click)="toggleMenu('accounts')"
+                title="Accounts Management">
+          <div class="nav-link-content">
+            <i class="bi bi-calculator"></i>
+            <span *ngIf="!isCollapsed">Accounts Management</span>
+          </div>
+          <i class="toggle-icon bi" 
+             [ngClass]="activeMenu === 'accounts' ? 'bi-dash-square' : 'bi-plus-square'"
+             *ngIf="!isCollapsed"></i>
+        </button>
+
+       <ul class="nav-children" [class.open]="activeMenu === 'accounts' && !isCollapsed">
+          <li><a routerLink="/chart-of-accounts" routerLinkActive="active" class="nav-link">Chart Of Accounts</a></li>
+          <li><a routerLink="/payment-voucher" routerLinkActive="active" class="nav-link">Payment Voucher</a></li>
+          <li><a routerLink="/receipt-voucher" routerLinkActive="active" class="nav-link">Receipt Voucher</a></li>
+          <li><a routerLink="/accounts-reports" routerLinkActive="active" class="nav-link">Accounts Reports</a></li>
+          <li><a routerLink="/journal-voucher" routerLinkActive="active" class="nav-link">Journal Voucher</a></li>
+          <li><a routerLink="/cash-book" routerLinkActive="active" class="nav-link">Cash Book</a></li>
+        </ul>
+      </li>
+
+      <!-- Inventory -->
+      <li class="nav-item has-children" [class.expanded]="activeMenu === 'inventory'">
+        <button class="nav-link nav-toggle" 
+                (click)="toggleMenu('inventory')"
+                title="Inventory Management">
+          <div class="nav-link-content">
+            <i class="bi bi-box-seam-fill"></i>
+            <span *ngIf="!isCollapsed">Inventory Management</span>
+          </div>
+          <i class="toggle-icon bi" 
+             [ngClass]="activeMenu === 'inventory' ? 'bi-dash-square' : 'bi-plus-square'"
+             *ngIf="!isCollapsed"></i>
+        </button>
+<ul class="nav-children" [class.open]="activeMenu === 'inventory' && !isCollapsed">
+          <li><a routerLink="/warehouse-creation" routerLinkActive="active" class="nav-link">Warehouse Creation</a></li>
+          <li><a routerLink="/item-registration" routerLinkActive="active" class="nav-link">Item Registration</a></li>
+          <li><a routerLink="/stock-in-hand" routerLinkActive="active" class="nav-link">Stock In Hand</a></li>
+          <li><a routerLink="/inventory-reports" routerLinkActive="active" class="nav-link">Inventory Reports</a></li>
+          <li><a routerLink="/stock-adjustment" routerLinkActive="active" class="nav-link">Stock Adjustment</a></li>
+          <li><a routerLink="/dealer-rate-list" routerLinkActive="active" class="nav-link">Dealer Rate List</a></li>
+        </ul>
+      </li>
+
+    </ul>
+  </nav>
+</div>

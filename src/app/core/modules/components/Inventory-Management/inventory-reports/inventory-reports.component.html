@@ -1,0 +1,215 @@
+<div class="page-container">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <i class="bi bi-graph-up"></i>
+    Inventory Reports — Stock Ledger
+  </div>
+
+  <div class="page-subtitle">
+    View stock movement history and balances
+  </div>
+
+  <!-- FILTER CARD -->
+  <div class="erp-card mb-4">
+
+    <div class="erp-card-header dark">
+      Filters
+    </div>
+
+    <div class="erp-card-body">
+
+      <div class="row">
+
+        <!-- PRODUCT -->
+        <div class="col-md-4 form-group">
+          <label class="form-label">Product</label>
+
+          <select class="form-control form-select"
+                  [(ngModel)]="selectedProductId">
+
+            <option value="">----All Products----</option>
+
+            <option *ngFor="let p of productList"
+                    [value]="p.id">
+              {{ p.name }}
+            </option>
+
+          </select>
+        </div>
+
+        <!-- WAREHOUSE -->
+        <div class="col-md-4 form-group">
+          <label class="form-label">Warehouse</label>
+
+          <select class="form-control form-select"
+                  [(ngModel)]="selectedWarehouseId">
+
+            <option value="">----All Warehouses----</option>
+
+            <option *ngFor="let w of warehouseList"
+                    [value]="w.id">
+              {{ w.name }}
+            </option>
+
+          </select>
+        </div>
+
+        <!-- BUTTON -->
+        <div class="col-md-4 form-group flex" style="align-items:end">
+
+          <button class="btn btn-primary"
+                  (click)="load()">
+
+            <i class="bi bi-search"></i>
+            Load
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row mb-4">
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon green">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Total In</div>
+          <div class="stat-value text-success">
+            {{ totalIn | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon red">
+          <i class="bi bi-arrow-up"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Total Out</div>
+          <div class="stat-value text-danger">
+            {{ totalOut | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+
+        <div class="stat-icon blue">
+          <i class="bi bi-calculator"></i>
+        </div>
+
+        <div>
+          <div class="stat-label">Balance</div>
+          <div class="stat-value text-primary">
+            {{ balance | number:'1.2-2' }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="erp-card">
+
+    <div class="erp-card-header dark">
+      Stock Ledger
+    </div>
+
+    <div class="erp-card-body p-0">
+
+      <div class="erp-table-wrapper">
+
+        <table class="erp-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Product</th>
+              <th>Warehouse</th>
+              <th>Type</th>
+              <th>Reference</th>
+              <th class="text-right">Qty In</th>
+              <th class="text-right">Qty Out</th>
+              <th class="text-right">Rate</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let s of ledger; let i = index">
+
+              <td>{{ i + 1 }}</td>
+
+              <td>{{ s.transactionDate | date:'dd/MM/yyyy' }}</td>
+
+              <td class="fw-700">
+                {{ s.productName }}
+              </td>
+
+              <td>{{ s.warehouseName }}</td>
+
+              <td>
+                <span class="erp-badge gray"
+                      [ngClass]="txColor(s.transactionType)">
+                  {{ txLabel(s.transactionType) }}
+                </span>
+              </td>
+
+              <td>
+                <small>{{ s.referenceNo }}</small>
+              </td>
+
+              <td class="text-right text-success fw-700">
+                {{ s.qtyIn > 0 ? (s.qtyIn | number:'1.2-2') : '' }}
+              </td>
+
+              <td class="text-right text-danger fw-700">
+                {{ s.qtyOut > 0 ? (s.qtyOut | number:'1.2-2') : '' }}
+              </td>
+
+              <td class="text-right">
+                {{ s.rate | number:'1.2-2' }}
+              </td>
+
+            </tr>
+
+            <tr *ngIf="ledger.length === 0">
+              <td colspan="9" class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Koi record nahi mila</p>
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
