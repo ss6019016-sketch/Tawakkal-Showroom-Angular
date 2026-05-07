@@ -20,7 +20,7 @@ export class PurchaseBillPostingComponent implements OnInit {
   productList: Product[] = [];
   editMode = false;
   activeTab: 'form' | 'list' = 'form';
-
+paginatedBills: any[] = [];
   constructor(
     private purchaseService: PurchaseService,
     private vendorService: VendorService,
@@ -135,5 +135,9 @@ export class PurchaseBillPostingComponent implements OnInit {
     phone:   '0300-0000000',
     email:   'info@sultantawakal.com'
   });
+}
+
+onPageChange(data: PurchaseBill[]) {
+  this.paginatedBills = data;
 }
 }

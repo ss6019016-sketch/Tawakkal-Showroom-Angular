@@ -99,9 +99,9 @@
 
           <tbody>
 
-            <tr *ngFor="let b of filteredList; let i = index">
+           <tr *ngFor="let b of paginatedList; let i = index">
 
-              <td>{{ i + 1 }}</td>
+           <td>{{ i + 1 }}</td>
 
               <td>
                 <span class="erp-badge primary">
@@ -148,6 +148,11 @@
         </table>
 
       </div>
+      <app-pagination
+  [data]="filteredList"
+  [pageSize]="5"
+  (pagedData)="onPageChange($event)">
+</app-pagination>
 
     </div>
 

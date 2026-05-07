@@ -8,7 +8,7 @@ import { Vendor } from 'src/app/models/vendor.model';
   styleUrls: ['./vender-master.component.css']
 })
 export class VenderMasterComponent implements OnInit {
-
+paginatedVendors: any[] = [];
   vendor: Vendor = this.getEmptyVendor();
   vendorList: Vendor[] = [];
 
@@ -82,5 +82,9 @@ export class VenderMasterComponent implements OnInit {
       address: ''
     };
   }
+
+onVendorPageChange(data: any[]) {
+  this.paginatedVendors = data;
+}
 
 }

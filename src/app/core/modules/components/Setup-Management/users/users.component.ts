@@ -8,7 +8,7 @@ import { AppUser } from 'src/app/models/user.model';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-
+paginatedUsers: any[] = [];
   user: AppUser = this.getEmpty();
   userList: AppUser[] = [];
   editMode = false;
@@ -17,7 +17,9 @@ export class UsersComponent implements OnInit {
 
   constructor(private userService: UserService) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+     this.load(); 
+    }
 
   load() {
     this.userService.getAll().subscribe({ next: res => this.userList = res });
@@ -63,6 +65,12 @@ export class UsersComponent implements OnInit {
   }
 
   getEmpty(): AppUser {
-    return { name: '', email: '', password: '' };
+    return {  name: '',
+    email: '',
+    password: '',
+    role: 'Viewer'};
   }
+  onPageChange(data: any[]) {
+  this.paginatedUsers = data;
+} 
 }

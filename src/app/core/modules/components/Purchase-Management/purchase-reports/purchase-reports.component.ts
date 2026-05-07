@@ -15,6 +15,8 @@ export class PurchaseReportsComponent implements OnInit {
   toDate: string = '';
   totalAmount: number = 0;
   showFilter: boolean = true; 
+  
+paginatedList: PurchaseBill[] = [];
 
   constructor(private purchaseService: PurchaseService) {}
 
@@ -31,7 +33,9 @@ export class PurchaseReportsComponent implements OnInit {
       }
     });
   }
-
+onPageChange(data: PurchaseBill[]) {
+  this.paginatedList = data;
+}
   filterByDate() {
     if (!this.fromDate && !this.toDate) {
       this.filteredList = this.billList;

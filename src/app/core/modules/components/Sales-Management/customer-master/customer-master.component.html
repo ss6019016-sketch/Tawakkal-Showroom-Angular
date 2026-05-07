@@ -113,7 +113,7 @@
 
           <tbody>
 
-            <tr *ngFor="let c of customerList; let i = index">
+          <tr *ngFor="let c of paginatedCustomers; let i = index">
 
               <td>{{ i + 1 }}</td>
               <td class="fw-semibold">{{ c.name }}</td>
@@ -148,6 +148,11 @@
         </table>
 
       </div>
+      <app-pagination
+  [data]="customerList"
+  [pageSize]="5"
+  (pagedData)="onPageChange($event)">
+</app-pagination>
     </div>
 
   </div>

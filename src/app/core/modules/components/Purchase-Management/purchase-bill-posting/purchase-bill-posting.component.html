@@ -254,90 +254,105 @@
         All Purchase Bills
       </div>
 
-      <div class="erp-card-body p-0">
+   <!-- ================= LIST ================= -->
+<div *ngIf="activeTab==='list'">
 
-        <div class="erp-table-wrapper">
+  <div class="erp-card">
 
-          <table class="erp-table">
 
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Bill No</th>
-                <th>Date</th>
-                <th>Vendor</th>
-                <th>Items</th>
-                <th class="text-right">Total</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
 
-            <tbody>
+    <div class="erp-card-body p-0">
 
-              <tr *ngFor="let b of billList; let i = index">
+      <div class="erp-table-wrapper">
 
-                <td>{{ i + 1 }}</td>
+        <table class="erp-table">
 
-                <td>
-                  <span class="erp-badge primary">
-                    {{ b.billNo }}
-                  </span>
-                </td>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Bill No</th>
+              <th>Date</th>
+              <th>Vendor</th>
+              <th>Items</th>
+              <th class="text-right">Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-                <td>{{ b.billDate | date:'dd/MM/yyyy' }}</td>
+          <tbody>
 
-                <td>{{ b.vendorName }}</td>
+          <tr *ngFor="let b of paginatedBills; let i = index">
 
-                <td>
-                  <span class="erp-badge gray">
-                    {{ b.items.length }}
-                  </span>
-                </td>
+            <td>{{ i + 1 }}</td>
 
-                <td class="text-right text-success fw-700">
-                  {{ b.totalAmount | number:'1.2-2' }}
-                </td>
+              <td>
+                <span class="erp-badge primary">
+                  {{ b.billNo }}
+                </span>
+              </td>
 
-                <td class="flex gap-2">
+              <td>{{ b.billDate | date:'dd/MM/yyyy' }}</td>
 
-                  <button class="btn btn-primary btn-sm"
-                          (click)="editBill(b)">
-                    <i class="bi bi-pencil"></i>
-                  </button>
+              <td>{{ b.vendorName }}</td>
 
-                  <button class="btn btn-info btn-sm"
-                          (click)="printBill(b)">
-                    <i class="bi bi-printer"></i>
-                  </button>
+              <td>
+                <span class="erp-badge gray">
+                  {{ b.items.length }}
+                </span>
+              </td>
 
-                  <button class="btn btn-danger btn-sm"
-                          (click)="deleteBill(b.id!)">
-                    <i class="bi bi-trash"></i>
-                  </button>
+              <td class="text-right text-success fw-700">
+                {{ b.totalAmount | number:'1.2-2' }}
+              </td>
 
-                </td>
+              <td class="flex gap-2">
 
-              </tr>
+                <button class="btn btn-primary btn-sm"
+                        (click)="editBill(b)">
+                  <i class="bi bi-pencil"></i>
+                </button>
 
-              <tr *ngIf="billList.length===0">
-                <td colspan="7">
-                  <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <p>No Bills Found</p>
-                  </div>
-                </td>
-              </tr>
+                <button class="btn btn-info btn-sm"
+                        (click)="printBill(b)">
+                  <i class="bi bi-printer"></i>
+                </button>
 
-            </tbody>
+                <button class="btn btn-danger btn-sm"
+                        (click)="deleteBill(b.id!)">
+                  <i class="bi bi-trash"></i>
+                </button>
 
-          </table>
+              </td>
 
-        </div>
+            </tr>
+
+            <tr *ngIf="billList.length===0">
+              <td colspan="7">
+                <div class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <p>No Bills Found</p>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
 
       </div>
+
+      <!-- ================= PAGINATION (HERE) ================= -->
+<app-pagination
+  [data]="billList"
+  (pagedData)="paginatedBills = $event">
+</app-pagination>
 
     </div>
 
   </div>
 
 </div>
+
+    </div>
+
+

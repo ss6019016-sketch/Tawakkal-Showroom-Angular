@@ -12,10 +12,15 @@
 
   <!-- ACTION -->
   <div class="mb-3">
-    <button class="btn btn-outline-primary btn-sm" (click)="seed()">
+
+    <button class="btn btn-outline-primary btn-sm"
+            (click)="seed()">
+
       <i class="bi bi-lightning"></i>
       Default Accounts Load
+
     </button>
+
   </div>
 
   <div class="form-list-layout">
@@ -29,29 +34,44 @@
 
       <div class="erp-card-body">
 
-        <form #accForm="ngForm" (ngSubmit)="onSubmit(accForm)">
+        <form #accForm="ngForm"
+              (ngSubmit)="onSubmit(accForm)">
 
           <div class="form-group">
-            <label class="form-label">Code <span class="required">*</span></label>
+
+            <label class="form-label">
+              Code <span class="required">*</span>
+            </label>
+
             <input type="text"
                    class="form-control"
                    name="code"
                    [(ngModel)]="account.code"
                    placeholder="e.g. 1001"
                    required>
+
           </div>
 
           <div class="form-group">
-            <label class="form-label">Account Name <span class="required">*</span></label>
+
+            <label class="form-label">
+              Account Name <span class="required">*</span>
+            </label>
+
             <input type="text"
                    class="form-control"
                    name="name"
                    [(ngModel)]="account.name"
                    required>
+
           </div>
 
           <div class="form-group">
-            <label class="form-label">Type <span class="required">*</span></label>
+
+            <label class="form-label">
+              Type <span class="required">*</span>
+            </label>
+
             <select class="form-control"
                     name="accountType"
                     [(ngModel)]="account.accountType"
@@ -61,18 +81,25 @@
 
               <option *ngFor="let t of accountTypes"
                       [value]="t.id">
+
                 {{ t.name }}
+
               </option>
 
             </select>
+
           </div>
 
           <div class="form-group">
+
             <label class="form-label">Description</label>
+
             <textarea class="form-control"
                       rows="2"
                       name="description"
-                      [(ngModel)]="account.description"></textarea>
+                      [(ngModel)]="account.description">
+            </textarea>
+
           </div>
 
           <div class="form-actions">
@@ -81,6 +108,7 @@
                     class="btn btn-primary flex-fill">
 
               <i class="bi bi-check-lg"></i>
+
               {{ editMode ? 'Update' : 'Save' }}
 
             </button>
@@ -88,7 +116,9 @@
             <button type="button"
                     class="btn btn-secondary"
                     (click)="reset()">
+
               Reset
+
             </button>
 
           </div>
@@ -96,29 +126,18 @@
         </form>
 
       </div>
+
     </div>
 
     <!-- ================= LIST ================= -->
     <div class="list-panel animate-right">
 
-      <div *ngFor="let type of accountTypes"
-           class="erp-card mb-3">
+      <div class="erp-card">
 
-        <!-- HEADER -->
-        <div class="erp-card-header"
-             [ngClass]="{
-               'primary': type.id === 1,
-               'danger': type.id === 2,
-               'success': type.id === 3,
-               'warning': type.id === 4,
-               'dark': type.id === 5
-             }">
-
-          {{ type.name }} Accounts
-
+        <div class="erp-card-header dark">
+          Account List
         </div>
 
-        <!-- TABLE -->
         <div class="erp-card-body p-0">
 
           <div class="erp-table-wrapper">
@@ -126,19 +145,29 @@
             <table class="erp-table">
 
               <thead>
+
                 <tr>
+
+                  <th>#</th>
                   <th>Code</th>
                   <th>Name</th>
+                  <th>Type</th>
                   <th class="text-right">Balance</th>
-                  <th></th>
+                  <th>Actions</th>
+
                 </tr>
+
               </thead>
 
               <tbody>
 
-                <tr *ngFor="let a of getByType(type.id)" class="stagger">
+                <tr *ngFor="let a of paginatedAccounts; let i = index">
 
-                  <td><code>{{ a.code }}</code></td>
+                  <td>{{ i + 1 }}</td>
+
+                  <td>
+                    <code>{{ a.code }}</code>
+                  </td>
 
                   <td>
 
@@ -146,7 +175,26 @@
 
                     <span *ngIf="a.isSystem"
                           class="erp-badge gray ms-1">
+
                       system
+
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <span class="erp-badge"
+                          [ngClass]="{
+                            'primary': a.accountType === 1,
+                            'danger': a.accountType === 2,
+                            'success': a.accountType === 3,
+                            'warning': a.accountType === 4,
+                            'dark': a.accountType === 5
+                          }">
+
+                      {{ getTypeName(a.accountType) }}
+
                     </span>
 
                   </td>
@@ -160,23 +208,32 @@
                     <button class="btn btn-primary btn-sm"
                             (click)="edit(a)"
                             [disabled]="a.isSystem">
+
                       <i class="bi bi-pencil"></i>
+
                     </button>
 
                     <button class="btn btn-danger btn-sm"
                             (click)="delete(a)"
                             [disabled]="a.isSystem">
+
                       <i class="bi bi-trash"></i>
+
                     </button>
 
                   </td>
 
                 </tr>
 
-                <tr *ngIf="getByType(type.id).length === 0">
-                  <td colspan="4" class="empty-state">
+                <tr *ngIf="paginatedAccounts.length === 0">
+
+                  <td colspan="6"
+                      class="empty-state">
+
                     No accounts found
+
                   </td>
+
                 </tr>
 
               </tbody>
@@ -185,10 +242,19 @@
 
           </div>
 
+          <!-- PAGINATION -->
+          <app-pagination
+            [data]="accountList"
+            [pageSize]="5"
+            (pagedData)="onPageChange($event)">
+          </app-pagination>
+
         </div>
+
       </div>
 
     </div>
 
   </div>
+
 </div>

@@ -151,7 +151,7 @@
 
               <tbody class="stagger">
 
-                <tr *ngFor="let v of vendorList; let i = index">
+              <tr *ngFor="let v of paginatedVendors; let i = index">
 
                   <td class="text-muted fs-sm">{{ i + 1 }}</td>
 
@@ -194,6 +194,13 @@
               <p>No vendors found — add from left panel</p>
 
             </div>
+
+            <!-- PAGINATION -->
+<app-pagination
+  [data]="vendorList"
+  [pageSize]="5"
+  (pagedData)="paginatedVendors = $event">
+</app-pagination>
 
           </div>
 

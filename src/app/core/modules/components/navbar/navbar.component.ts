@@ -57,6 +57,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
       });
   }
 
+  getRoleBadgeClass(): string {
+
+  switch (this.userRole?.toLowerCase()) {
+
+    case 'admin':
+      return 'bg-danger';
+
+    case 'manager':
+      return 'bg-warning';
+
+    case 'cashier':
+      return 'bg-success';
+
+    case 'viewer':
+      return 'bg-secondary';
+
+    default:
+      return 'bg-dark';
+  }
+}
+
   // ============================================
   // SIDEBAR
   // ============================================
@@ -127,20 +148,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return name.substring(0, 2).toUpperCase();
   }
 
-  getRoleBadgeClass(): string {
-    const role = this.userRole.toLowerCase();
-    switch (role) {
-      case 'admin':
-      case 'administrator':
-        return 'bg-danger';
-      case 'manager':
-        return 'bg-primary';
-      case 'user':
-        return 'bg-success';
-      default:
-        return 'bg-secondary';
-    }
-  }
+  // getRoleBadgeClass(): string {
+  //   const role = this.userRole.toLowerCase();
+  //   switch (role) {
+  //     case 'admin':
+  //     case 'administrator':
+  //       return 'bg-danger';
+  //     case 'manager':
+  //       return 'bg-primary';
+  //     case 'user':
+  //       return 'bg-success';
+  //     default:
+  //       return 'bg-secondary';
+  //   }
+  // }
 
   getProfilePictureUrl(): string {
     if (this.userProfilePicture) {

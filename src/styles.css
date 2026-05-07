@@ -669,3 +669,21 @@ textarea.form-control {
   .page-container { padding: 0; }
   .erp-card { box-shadow: none; border: 1px solid #ddd; }
 }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: #fff;
+  }
+
+  .pagination-wrapper button {
+    min-width: 36px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 12px;
+  }

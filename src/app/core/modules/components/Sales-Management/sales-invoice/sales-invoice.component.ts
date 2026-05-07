@@ -20,7 +20,7 @@ export class SalesInvoiceComponent implements OnInit {
   productList: Product[] = [];
   editMode = false;
   activeTab: 'form' | 'list' = 'form';
-
+paginatedInvoices: any[] = [];
   constructor(
     private salesService: SalesService,
     private customerService: CustomerService,
@@ -34,6 +34,10 @@ export class SalesInvoiceComponent implements OnInit {
     this.loadProducts();
     this.loadNextInvoiceNo();
   }
+
+  onPageChange(data: SalesInvoice[]) {
+  this.paginatedInvoices = data;
+}
 
   loadInvoices() {
     this.salesService.getAll().subscribe({ next: res => this.invoiceList = res });

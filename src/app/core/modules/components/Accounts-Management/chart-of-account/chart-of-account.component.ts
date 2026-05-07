@@ -10,10 +10,12 @@ import { Account } from 'src/app/models/Account.model';
 export class ChartOfAccountComponent implements OnInit {
 
   account: Account = this.getEmpty();
+
   accountList: Account[] = [];
+  paginatedAccounts: Account[] = [];
+
   editMode = false;
   editId: string | null = null;
-  seeded = false;
 
   accountTypes = [
     { id: 1, name: 'Asset' },
@@ -25,59 +27,129 @@ export class ChartOfAccountComponent implements OnInit {
 
   constructor(private accountService: AccountService) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.load();
+  }
 
   load() {
+
     this.accountService.getAllAccounts().subscribe({
-      next: res => this.accountList = res
+      next: res => {
+
+        this.accountList = res;
+        this.paginatedAccounts = res;
+
+      }
     });
+
+  }
+
+  onPageChange(data: Account[]) {
+
+    this.paginatedAccounts = data;
+
   }
 
   seed() {
+
     this.accountService.seedAccounts().subscribe(() => {
+
       this.load();
+
       alert('Default accounts add ho gaye!');
+
     });
+
   }
 
   onSubmit(form: any) {
+
     if (form.invalid) return;
+
     if (this.editMode && this.editId) {
+
       this.account.id = this.editId;
+
       this.accountService.updateAccount(this.account).subscribe(() => {
-        this.load(); this.reset();
+
+        this.load();
+        this.reset();
+
       });
+
     } else {
+
       this.accountService.createAccount(this.account).subscribe(() => {
-        this.load(); this.reset();
+
+        this.load();
+        this.reset();
+
       });
+
     }
+
   }
 
   edit(a: Account) {
-    if (a.isSystem) { alert('System account edit nahi ho sakta!'); return; }
+
+    if (a.isSystem) {
+
+      alert('System account edit nahi ho sakta!');
+      return;
+
+    }
+
     this.account = { ...a };
+
     this.editMode = true;
     this.editId = a.id!;
+
   }
 
   delete(a: Account) {
-    if (a.isSystem) { alert('System account delete nahi ho sakta!'); return; }
+
+    if (a.isSystem) {
+
+      alert('System account delete nahi ho sakta!');
+      return;
+
+    }
+
     if (!confirm('Delete karna chahte ho?')) return;
-    this.accountService.deleteAccount(a.id!).subscribe(() => this.load());
+
+    this.accountService.deleteAccount(a.id!).subscribe(() => {
+
+      this.load();
+
+    });
+
   }
 
   reset() {
+
     this.account = this.getEmpty();
+
     this.editMode = false;
     this.editId = null;
+
   }
 
-  getByType(type: number) {
-    return this.accountList.filter(a => a.accountType === type);
+  getTypeName(typeId: number): string {
+
+    const type = this.accountTypes.find(t => t.id === typeId);
+
+    return type ? type.name : '';
+
   }
 
   getEmpty(): Account {
-    return { code: '', name: '', accountType: 1 };
+
+    return {
+      code: '',
+      name: '',
+      accountType: 1
+    };
+
   }
+
 }

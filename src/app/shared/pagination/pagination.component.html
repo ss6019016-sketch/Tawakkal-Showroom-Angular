@@ -1,0 +1,23 @@
+<div class="pagination-wrapper">
+
+  <button class="btn btn-light btn-sm"
+          (click)="prev()"
+          [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <button class="btn btn-sm"
+          *ngFor="let p of [].constructor(totalPages); let i = index"
+          (click)="goTo(i + 1)"
+          [class.btn-primary]="currentPage === i + 1"
+          [class.btn-light]="currentPage !== i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button class="btn btn-light btn-sm"
+          (click)="next()"
+          [disabled]="currentPage === totalPages">
+    Next
+  </button>
+
+</div>

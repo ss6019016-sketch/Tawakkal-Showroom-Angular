@@ -12,6 +12,7 @@ export class CustomerMasterComponent implements OnInit {
   customer: Customer = this.getEmpty();
   customerList: Customer[] = [];
   editMode = false;
+  paginatedCustomers: any[] = [];
   editId: string | null = null;
 
   constructor(private customerService: CustomerService) {}
@@ -26,6 +27,10 @@ export class CustomerMasterComponent implements OnInit {
       error: (err) => console.error(err)
     });
   }
+
+  onPageChange(data: Customer[]) {
+  this.paginatedCustomers = data;
+}
 
   onSubmit(form: any) {
     if (form.invalid) return;
