@@ -8,30 +8,79 @@ import { Product } from 'src/app/models/product.model';
   styleUrls: ['./item-registration.component.css']
 })
 export class ItemRegistrationComponent implements OnInit {
+
   product: Product = this.getEmpty();
   productList: Product[] = [];
-  editMode = false; editId: string | null = null;
+
+  editMode = false;
+  editId: number | null = null;
 
   constructor(private productService: ProductService) {}
-  ngOnInit() { this.load(); }
 
-  load() { this.productService.getAll().subscribe(res => this.productList = res); }
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load() {
+    this.productService.getAll().subscribe({
+      next: res => this.productList = res
+    });
+  }
 
   onSubmit(form: any) {
     if (form.invalid) return;
-    if (this.editMode && this.editId) {
-      this.product.id = this.editId;
-      this.productService.update(this.product).subscribe(() => { this.load(); this.reset(); });
+
+    if (this.editMode && this.editId !== null) {
+
+      this.product.productId = this.editId;
+
+      this.productService.update(this.product).subscribe(() => {
+        this.load();
+        this.reset();
+      });
+
     } else {
-      this.productService.create(this.product).subscribe(() => { this.load(); this.reset(); });
+
+      this.productService.create(this.product).subscribe(() => {
+        this.load();
+        this.reset();
+      });
+
     }
   }
 
-  edit(p: Product) { this.product = { ...p }; this.editMode = true; this.editId = p.id!; }
-  delete(id: string) {
-    if (!confirm('Delete?')) return;
-    this.productService.delete(id).subscribe(() => this.load());
+  edit(p: Product) {
+    this.product = { ...p };
+    this.editMode = true;
+    this.editId = p.productId;
   }
-  reset() { this.product = this.getEmpty(); this.editMode = false; this.editId = null; }
-  getEmpty(): Product { return { name: '', description: '', rate: 0, unit: '' }; }
+
+  delete(id: number) {
+    if (!confirm('Delete?')) return;
+
+    this.productService.delete(id.toString()).subscribe(() => this.load());
+  }
+
+  reset() {
+    this.product = this.getEmpty();
+    this.editMode = false;
+    this.editId = null;
+  }
+
+  getEmpty(): Product {
+    return {
+      productId: 0,
+      tenantId: 0,
+      name: '',
+      description: '',
+      price: 0,
+      imageUrl: '',
+      categoryId: 0,
+      categoryName: '',
+      stockQty: 0,
+      unit: '',
+      status: true,
+      createdDate: ''
+    };
+  }
 }

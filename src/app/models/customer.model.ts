@@ -1,8 +1,15 @@
 export interface Customer {
-  id?: string;
-  name: string;
+  customerId?: number;
+  tenantId?: number;
+
+  firstName: string;
+  lastName: string;
+  fullName?: string;
+
   email: string;
-  phone: string;
-  city: string;
+  phone?: string;
   address?: string;
+
+  status?: boolean;
+  createdDate?: string;
 }

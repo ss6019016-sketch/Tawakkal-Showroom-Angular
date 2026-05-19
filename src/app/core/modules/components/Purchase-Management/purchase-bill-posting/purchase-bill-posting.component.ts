@@ -16,16 +16,17 @@ export class PurchaseBillPostingComponent implements OnInit {
 
   bill: PurchaseBill = this.getEmpty();
   billList: PurchaseBill[] = [];
+  paginatedBills: PurchaseBill[] = [];
   vendorList: Vendor[] = [];
   productList: Product[] = [];
   editMode = false;
   activeTab: 'form' | 'list' = 'form';
-paginatedBills: any[] = [];
+
   constructor(
     private purchaseService: PurchaseService,
     private vendorService: VendorService,
     private productService: ProductService,
-    private printService: PrintService 
+    private printService: PrintService
   ) {}
 
   ngOnInit(): void {
@@ -48,22 +49,21 @@ paginatedBills: any[] = [];
   }
 
   loadNextBillNo() {
-    if (!this.editMode) {
+    if (!this.editMode)
       this.purchaseService.getNextBillNo().subscribe(no => this.bill.billNo = no);
-    }
   }
 
   addItem() {
     this.bill.items.push({ productName: '', description: '', qty: 1, rate: 0 });
   }
 
-  // Product dropdown se select hone par rate auto fill
   onProductSelect(index: number, productId: string) {
-    const product = this.productList.find(p => p.id === productId);
+    const product = this.productList.find(p => p.productId === Number(productId));
     if (product) {
-      this.bill.items[index].productName  = product.name;
+      this.bill.items[index].productId   = product.productId;
+      this.bill.items[index].productName = product.name;
       this.bill.items[index].description = product.description || '';
-      this.bill.items[index].rate        = product.rate;
+      this.bill.items[index].rate        = product.price;
       this.calcTotal();
     }
   }
@@ -88,7 +88,7 @@ paginatedBills: any[] = [];
     if (this.bill.items.length === 0) { alert('Kam se kam ek item add karo!'); return; }
     this.calcTotal();
 
-    if (this.editMode && this.bill.id) {
+    if (this.editMode && this.bill.billId) {  // ✅ id → billId
       this.purchaseService.update(this.bill).subscribe(() => {
         this.loadBills(); this.reset(); this.activeTab = 'list';
       });
@@ -109,7 +109,7 @@ paginatedBills: any[] = [];
     this.activeTab = 'form';
   }
 
-  deleteBill(id: string) {
+  deleteBill(id: number) {
     if (!confirm('Bill delete karna chahte ho?')) return;
     this.purchaseService.delete(id).subscribe(() => this.loadBills());
   }
@@ -124,20 +124,23 @@ paginatedBills: any[] = [];
     return {
       billNo: '',
       billDate: new Date().toISOString().substring(0, 10),
-      vendorId: '', notes: '', totalAmount: 0, items: []
+      vendorId: null,
+      notes: '',
+      totalAmount: 0,
+      items: []
     };
   }
 
   printBill(bill: PurchaseBill) {
-  this.printService.printPurchaseBill(bill, {
-    name:    'Sultan Tawakal Trading',
-    address: 'Karachi, Pakistan',
-    phone:   '0300-0000000',
-    email:   'info@sultantawakal.com'
-  });
-}
+    this.printService.printPurchaseBill(bill, {
+      name:    'Sultan Tawakal Trading',
+      address: 'Karachi, Pakistan',
+      phone:   '0300-0000000',
+      email:   'info@sultantawakal.com'
+    });
+  }
 
-onPageChange(data: PurchaseBill[]) {
-  this.paginatedBills = data;
-}
+  onPageChange(data: PurchaseBill[]) {
+    this.paginatedBills = data;
+  }
 }

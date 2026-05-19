@@ -16,13 +16,13 @@
           <div class="col-md-4 mb-3">
             <label class="form-label">Rate <span class="text-danger">*</span></label>
             <input type="number" class="form-control" name="rate"
-                   [(ngModel)]="product.rate" required min="0" placeholder="0.00">
+                   [(ngModel)]="product.price" required min="0" placeholder="0.00">
           </div>
-          <div class="col-md-4 mb-3">
+          <!-- <div class="col-md-4 mb-3">
             <label class="form-label">Unit</label>
             <input type="text" class="form-control" name="unit"
                    [(ngModel)]="product.unit" placeholder="e.g. Pcs, Kg, Box">
-          </div>
+          </div> -->
           <div class="col-md-12 mb-3">
             <label class="form-label">Description</label>
             <textarea class="form-control" name="description"
@@ -43,21 +43,21 @@
       <table class="table table-bordered table-hover align-middle">
         <thead class="table-light">
           <tr>
-            <th>#</th><th>Name</th><th>Rate</th><th>Unit</th><th>Description</th><th>Actions</th>
+            <th>#</th><th>Name</th><th>Rate</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let p of productList; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ p.name }}</td>
-            <td class="text-end">{{ p.rate | number:'1.2-2' }}</td>
-            <td>{{ p.unit }}</td>
+            <td class="text-end">{{ p.price | number:'1.2-2' }}</td>
+            <!-- <td>{{ p.unit }}</td> -->
             <td>{{ p.description }}</td>
             <td>
               <button class="btn btn-sm btn-primary me-1" (click)="edit(p)">
                 <i class="bi bi-pencil"></i> Edit
               </button>
-              <button class="btn btn-sm btn-danger" (click)="delete(p.id!)">
+              <button class="btn btn-sm btn-danger" (click)="delete(p.productId)">
                 <i class="bi bi-trash"></i> Delete
               </button>
             </td>

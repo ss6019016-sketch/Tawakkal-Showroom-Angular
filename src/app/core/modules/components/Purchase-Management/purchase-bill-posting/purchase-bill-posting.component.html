@@ -81,18 +81,17 @@
             <div class="col-md-4 form-group">
               <label class="form-label">Vendor <span class="required">*</span></label>
 
-              <select class="form-control"
-                      name="vendorId"
-                      [(ngModel)]="bill.vendorId"
-                      required>
-
-                <option value="">-- Vendor Select Karo --</option>
-
-                <option *ngFor="let v of vendorList" [value]="v.id">
-                  {{ v.name }}
-                </option>
-
-              </select>
+           <!-- vendorId number parse karo -->
+<select class="form-control"
+        name="vendorId"
+        [ngModel]="bill.vendorId"
+        (ngModelChange)="bill.vendorId = $event ? +$event : null"
+        required>
+  <option [value]="null">-- Vendor Select Karo --</option>
+  <option *ngFor="let v of vendorList" [value]="v.id">
+    {{ v.name }}
+  </option>
+</select>
 
             </div>
 
@@ -159,10 +158,10 @@
                       <option value="">-- Select --</option>
 
                       <option *ngFor="let p of productList"
-                              [value]="p.id"
+                              [value]="p.productId"
                               [selected]="item.productName === p.name">
 
-                        {{ p.name }} ({{ p.rate | number:'1.2-2' }})
+                        {{ p.name }} ({{ p.price | number:'1.2-2' }})
 
                       </option>
 
@@ -317,10 +316,10 @@
                   <i class="bi bi-printer"></i>
                 </button>
 
-                <button class="btn btn-danger btn-sm"
-                        (click)="deleteBill(b.id!)">
-                  <i class="bi bi-trash"></i>
-                </button>
+           <button class="btn btn-danger btn-sm"
+        (click)="deleteBill(b.billId!)">  <!-- ✅ id → billId -->
+  <i class="bi bi-trash"></i>
+</button>
 
               </td>
 

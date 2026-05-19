@@ -81,8 +81,8 @@
               <option value="">-- Customer Select --</option>
 
               <option *ngFor="let c of customerList"
-                      [value]="c.id">
-                {{ c.name }}
+                      [value]="c.customerId">
+                {{ c.firstName }} {{ c.lastName }}
               </option>
 
             </select>
@@ -145,8 +145,8 @@
                   <option value="">-- Select --</option>
 
                   <option *ngFor="let p of productList"
-                          [value]="p.id">
-                    {{ p.name }} ({{ p.rate | number:'1.2-2' }})
+                          [value]="p.productId">
+                    {{ p.name }} 
                   </option>
 
                 </select>
@@ -203,15 +203,20 @@
 
     <!-- ACTIONS -->
     <div class="d-flex gap-2 mb-5">
+  <button type="button"
+              class="btn btn-success px-4"
+              (click)="onSubmit()">
 
-      <button class="btn btn-success px-4">
-        <i class="bi bi-check-lg"></i>
         {{ editMode ? 'Update Invoice' : 'Save Invoice' }}
+
       </button>
 
-      <button class="btn btn-light" (click)="reset()">
+      <button type="button"
+              class="btn btn-light ms-2"
+              (click)="reset()">
         Reset
       </button>
+   
 
     </div>
 

@@ -2,12 +2,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PurchaseBill } from 'src/app/models/purchase-bill.model';
-// import { environment } from 'src/environments-old/environment.prod';
-import { environment } from 'src/app/environments/environment.prod';
+import { environment } from 'src/environments-old/environment-old';
+
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseService {
-  private apiUrl = environment.apiUrl + 'purchase';
+private apiUrl = `${environment.apiUrl}Purchase`;
   constructor(private http: HttpClient) {}
 
   private getHeaders() {
@@ -27,7 +27,7 @@ export class PurchaseService {
   update(bill: PurchaseBill): Observable<PurchaseBill> {
     return this.http.put<PurchaseBill>(this.apiUrl, bill, this.getHeaders());
   }
-  delete(id: string): Observable<any> {
+  delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, this.getHeaders());
   }
 }

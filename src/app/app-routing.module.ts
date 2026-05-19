@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth.guard';
 
-// Components
 import { UsersComponent } from './core/modules/components/Setup-Management/users/users.component';
-import { RolesComponent } from './core/modules/components/Setup-Management/roles/roles.component';
 import { VenderMasterComponent } from './core/modules/components/Purchase-Management/vender-master/vender-master.component';
 import { PurchaseBillPostingComponent } from './core/modules/components/Purchase-Management/purchase-bill-posting/purchase-bill-posting.component';
 import { PurchaseReturnComponent } from './core/modules/components/Purchase-Management/purchase-return/purchase-return.component';
@@ -29,9 +26,12 @@ import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.comp
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout.component';
 import { ProductMasterComponent } from './core/modules/components/Sales-Management/product-master/product-master.component';
 import { JournalVoucherComponent } from './core/modules/components/Accounts-Management/journal-voucher/journal-voucher.component';
+import { TenantManagementComponent } from './core/modules/components/Tenant-Management/tenant-management.component';
+import { RoleManagementComponent } from './core/modules/components/Setup-Management/role-management/role-management.component';
+import { ModuleManagementComponent } from './core/modules/components/Setup-Management/mudule-management/module-management.component';
 
 const routes: Routes = [
-  // Auth Routes (Login/Register) - No Layout, No Auth Guard
+  // Auth Routes — no guard
   {
     path: '',
     component: AuthLayoutComponent,
@@ -43,52 +43,50 @@ const routes: Routes = [
     ]
   },
 
-  // Main App Routes - With Sidebar & Navbar Layout + Auth Guard
+  // Main App Routes — no guard (AuthGuard removed)
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [AuthGuard],
     children: [
-      // Dashboard
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard',          component: DashboardComponent },
 
       // Setup Management
-      { path: 'users', component: UsersComponent },
-      { path: 'roles', component: RolesComponent },
+      { path: 'users',              component: UsersComponent },
+      { path: 'roles',              component: RoleManagementComponent },
+      { path: 'tenant',             component: TenantManagementComponent },
+      { path: 'module-management',  component: ModuleManagementComponent },
 
       // Purchase Management
-      { path: 'vendor-master', component: VenderMasterComponent },
-      { path: 'purchase-bill-posting', component: PurchaseBillPostingComponent },
-      { path: 'purchase-return', component: PurchaseReturnComponent },
-      { path: 'purchase-reports', component: PurchaseReportsComponent },
+      { path: 'vendor-master',          component: VenderMasterComponent },
+      { path: 'purchase-bill-posting',  component: PurchaseBillPostingComponent },
+      { path: 'purchase-return',        component: PurchaseReturnComponent },
+      { path: 'purchase-reports',       component: PurchaseReportsComponent },
 
       // Sales Management
-      { path: 'customer-master', component: CustomerMasterComponent },
-      { path: 'sales-invoice', component: SalesInvoiceComponent },
-      { path: 'sales-return', component: SalesReturnComponent },
-      { path: 'sales-reports', component: SalesReportsComponent },
-      { path: 'product-master', component: ProductMasterComponent },
+      { path: 'customer-master',  component: CustomerMasterComponent },
+      { path: 'sales-invoice',    component: SalesInvoiceComponent },
+      { path: 'sales-return',     component: SalesReturnComponent },
+      { path: 'sales-reports',    component: SalesReportsComponent },
+      { path: 'product-master',   component: ProductMasterComponent },
 
       // Accounts Management
-      { path: 'chart-of-accounts', component: ChartOfAccountComponent },
-      { path: 'payment-voucher', component: PaymentVoucherComponent },
-      { path: 'receipt-voucher', component: ReceiptVoucherComponent },
-      { path: 'accounts-reports', component: AccountsReportComponent },
-      { path: 'cash-book', component: CashBookComponent },
-      { path: 'journal-voucher', component: JournalVoucherComponent },
-      
+      { path: 'chart-of-account',  component: ChartOfAccountComponent },
+      { path: 'payment-voucher',   component: PaymentVoucherComponent },
+      { path: 'receipt-voucher',   component: ReceiptVoucherComponent },
+      { path: 'accounts-report',   component: AccountsReportComponent },
+      { path: 'cash-book',         component: CashBookComponent },
+      { path: 'journal-voucher',   component: JournalVoucherComponent },
 
       // Inventory Management
-      { path: 'warehouse-creation', component: WareHouseCreationComponent },
+      { path: 'warehouse',         component: WareHouseCreationComponent },
       { path: 'item-registration', component: ItemRegistrationComponent },
-      { path: 'stock-in-hand', component: StockInHandComponent },
+      { path: 'stock-in-hand',     component: StockInHandComponent },
       { path: 'inventory-reports', component: InventoryReportsComponent },
-      { path: 'stock-adjustment', component: StockAdjustmentComponent },
-      { path: 'dealer-rate-list', component: DealerRateListComponent }
+      { path: 'stock-adjustment',  component: StockAdjustmentComponent },
+      { path: 'dealer-rate-list',  component: DealerRateListComponent },
     ]
   },
 
-  // Fallback route
   { path: '**', redirectTo: 'login' }
 ];
 

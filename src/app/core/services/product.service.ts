@@ -2,12 +2,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from 'src/app/models/product.model';
-// import { environment } from 'src/environments-old/environment.prod';
-import { environment } from 'src/app/environments/environment.prod';
+import { environment } from 'src/environments-old/environment-old';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-private apiUrl = environment.apiUrl + 'Product';
+private apiUrl = `${environment.apiUrl}product`;
   constructor(private http: HttpClient) {}
 
   private getHeaders() {

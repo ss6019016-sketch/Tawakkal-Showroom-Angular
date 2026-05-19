@@ -30,16 +30,20 @@
                 Product <span class="required">*</span>
               </label>
 
-              <select class="form-control form-select"
-                      name="productId"
-                      [(ngModel)]="dealerRate.productId"
-                      required
-                      (ngModelChange)="onProductSelect(dealerRate.productId)">
-                <option value="">-- Product --</option>
-                <option *ngFor="let p of productList" [value]="p.id">
-                  {{ p.name }}
-                </option>
-              </select>
+            <select class="form-control form-select"
+        name="productId"
+        [(ngModel)]="dealerRate.productId"
+        required
+        (ngModelChange)="onProductSelect($event)">
+
+  <option [ngValue]="null">-- Product --</option>
+
+  <option *ngFor="let p of productList"
+          [ngValue]="p.productId">
+    {{ p.name }}
+  </option>
+
+</select>
             </div>
 
             <!-- DEALER NAME -->

@@ -48,7 +48,7 @@
               <input type="number"
                      class="form-control"
                      name="rate"
-                     [(ngModel)]="product.rate"
+                     [(ngModel)]="product.price"
                      required
                      min="0">
             </div>
@@ -134,7 +134,7 @@
                   </td>
 
                   <td class="text-right fw-700">
-                    {{ p.rate | number:'1.2-2' }}
+                    {{ p.price | number:'1.2-2' }}
                   </td>
 
                   <td>{{ p.unit }}</td>
@@ -149,7 +149,7 @@
                     </button>
 
                     <button class="btn btn-sm btn-danger"
-                            (click)="delete(p.id!)">
+                            (click)="delete(p.productId)">
                       <i class="bi bi-trash"></i>
                     </button>
 

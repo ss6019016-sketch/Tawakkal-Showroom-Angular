@@ -56,17 +56,24 @@ paginatedInvoices: any[] = [];
   addItem() {
     this.invoice.items.push({ productName: '', description: '', qty: 1, rate: 0 });
   }
+onProductSelect(index: number, productId: any) {
 
-  onProductSelect(index: number, productId: string) {
-    const product = this.productList.find(p => p.id === productId);
-    if (product) {
-      this.invoice.items[index].productName  = product.name;
-      this.invoice.items[index].description = product.description || '';
-      this.invoice.items[index].rate        = product.rate;
-      this.calcTotal();
-    }
-  }
+  const id = Number(productId);
 
+  const product = this.productList.find(p => p.productId === id);
+
+  if (!product) return;
+
+  this.invoice.items[index] = {
+    ...this.invoice.items[index],
+    productName: product.name,
+    description: product.description || '',
+    rate: product.price
+  };
+
+  this.invoice.items = [...this.invoice.items];
+  this.calcTotal();
+}
   removeItem(i: number) {
     this.invoice.items.splice(i, 1);
     this.calcTotal();
@@ -82,22 +89,29 @@ paginatedInvoices: any[] = [];
     return item.qty * item.rate;
   }
 
-  onSubmit(form: any) {
-    if (form.invalid) return;
-    if (this.invoice.items.length === 0) { alert('Kam se kam ek item add karo!'); return; }
-    this.calcTotal();
+onSubmit() {
 
-    if (this.editMode && this.invoice.id) {
-      this.salesService.update(this.invoice).subscribe(() => {
-        this.loadInvoices(); this.reset(); this.activeTab = 'list';
-      });
-    } else {
-      this.salesService.create(this.invoice).subscribe(() => {
-        this.loadInvoices(); this.reset(); this.activeTab = 'list';
-      });
-    }
+  if (this.invoice.items.length === 0) {
+    alert('Add at least one item');
+    return;
   }
 
+  this.calcTotal();
+
+  if (this.editMode && this.invoice.id) {
+    this.salesService.update(this.invoice).subscribe(() => {
+      this.loadInvoices();
+      this.reset();
+      this.activeTab = 'list';
+    });
+  } else {
+    this.salesService.create(this.invoice).subscribe(() => {
+      this.loadInvoices();
+      this.reset();
+      this.activeTab = 'list';
+    });
+  }
+}
   editInvoice(inv: SalesInvoice) {
     this.invoice = {
       ...inv,
@@ -119,13 +133,16 @@ paginatedInvoices: any[] = [];
     this.loadNextInvoiceNo();
   }
 
-  getEmpty(): SalesInvoice {
-    return {
-      invoiceNo: '',
-      invoiceDate: new Date().toISOString().substring(0, 10),
-      customerId: '', notes: '', totalAmount: 0, items: []
-    };
-  }
+getEmpty(): SalesInvoice {
+  return {
+    invoiceNo: '',
+    invoiceDate: new Date().toISOString().substring(0, 10),
+    customerId: 0,   // 👈 MUST BE NUMBER (NOT '')
+    notes: '',
+    totalAmount: 0,
+    items: []
+  };
+}
 
   printInvoice(inv: SalesInvoice) {
   this.printService.printSalesInvoice(inv, {

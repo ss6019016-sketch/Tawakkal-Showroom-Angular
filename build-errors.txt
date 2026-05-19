@@ -1,0 +1,71 @@
+﻿
+> tawakal@0.0.0 build
+> ng build
+
+node.exe : - Generating browser application bundles (phase: setup)...
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (- Generating br...hase: setup)... 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γ£ö Browser application bundle generation complete.
+
+Γ£ö Browser application bundle generation complete.
+
+- Copying assets...
+
+Γ£ö Copying assets complete.
+
+- Generating index html...
+
+Γ£ö Index html generation complete.
+
+
+Initial Chunk Files           | Names                         |  Raw Size | Estimated Transfer Size
+main.c5f397ddec972736.js      | main                          | 600.59 kB |               127.05 kB
+polyfills.1b7e58ebbb7bd84f.js | polyfills                     |  33.02 kB |                10.66 kB
+styles.800a30fceb17d961.css   | styles                        |  13.43 kB |                 3.01 kB
+runtime.24a5821fb6ae90d6.js   | runtime                       |   2.62 kB |                 1.23 kB
+
+| Initial Total                 | 649.67 kB |               141.95 kB
+
+Lazy Chunk Files              | Names                         |  Raw Size | Estimated Transfer Size
+365.a8bdd703f7cabaa6.js       | core-modules-auth-auth-module |  17.35 kB |                 4.27 kB
+
+Build at: 2026-05-11T11:36:16.529Z - Hash: 9c7609565fc99e72 - Time: 14898ms
+
+Warning: src/app/core/modules/components/Setup-Management/role-management/role-
+management.component.html:144:64 - warning NG8107: The left side of this 
+optional chain operation does not include 'null' or 'undefined' in its type, 
+therefore the '?.' operator can be replaced with the '.' operator.
+
+144                 <span class="erp-badge blue">{{ r.permissions?.length || 0 
+}} modules</span>
+                                                                   ~~~~~~
+
+  src/app/core/modules/components/Setup-Management/role-management/role-managem
+ent.component.ts:7:16
+    7   templateUrl: './role-management.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component RoleManagementComponent.
+
+
+Warning: src/app/core/modules/components/Tenant-Management/tenant-management.co
+mponent.html:88:36 - warning NG8107: The left side of this optional chain 
+operation does not include 'null' or 'undefined' in its type, therefore the 
+'?.' operator can be replaced with the '.' operator.
+
+88                         {{ t.code?.charAt(0) }}
+                                      ~~~~~~
+
+  src/app/core/modules/components/Tenant-Management/tenant-management.component
+.ts:7:16
+    7   templateUrl: './tenant-management.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component TenantManagementComponent.
+
+
+
+

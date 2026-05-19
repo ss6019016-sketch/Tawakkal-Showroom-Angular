@@ -1,204 +1,76 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-// import { environment } from 'src/environments-old/environment.prod';
-import { environment } from 'src/app/environments/environment.prod';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { PermissionService } from './permission.service';
+import { environment } from 'src/environments-old/environment-old';
 
-
-// ============================
-// INTERFACES
-// ============================
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  token?: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  role?: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  message: string;
-  token: string;
-  user: User;
-}
-
-export interface RegisterResponse {
-  success: boolean;
-  message: string;
-  token?: string;
-  user?: User;
-}
-
-// ============================
-// SERVICE
-// ============================
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
   private apiUrl = `${environment.apiUrl}Auth`;
 
-  private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser: Observable<User | null>;
-
-  constructor(private http: HttpClient) {
-
-    const storedUser = localStorage.getItem('currentUser');
-
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null
-    );
-
-    this.currentUser = this.currentUserSubject.asObservable();
+ 
+  currentUser = new BehaviorSubject<any>(this.loadUser());
+ 
+  constructor(private http: HttpClient, private router: Router) {}
+ 
+  // Step 1 — email + password bhejo, tenants list milegi
+  getTenants(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/get-tenants`, { email, password });
   }
-
-  // ============================
-  // GET CURRENT USER
-  // ============================
-  get currentUserValue(): User | null {
-    return this.currentUserSubject.value;
-  }
-
-  getCurrentUser(): User | null {
-    return this.currentUserValue;
-  }
-
-  // ============================
-  // LOGIN
-  // ============================
-  login(email: string, password: string): Observable<User> {
-
-    const loginData: LoginRequest = { email, password };
-
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginData)
-      .pipe(
-        map(response => {
-
-          if (response.success && response.token) {
-
-            const user: User = {
-              ...response.user,
-              token: response.token
-            };
-
-            // Save data
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            localStorage.setItem('token', response.token);
-
-            // Update observable
-            this.currentUserSubject.next(user);
-
-            return user;
-          }
-
-          throw new Error(response.message || 'Login failed');
-        }),
-        catchError(error => {
-          console.error('Login error:', error);
-          throw error;
-        })
-      );
-  }
-
-  // ============================
-  // REGISTER
-  // ============================
-  register(data: RegisterRequest): Observable<RegisterResponse> {
-
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data)
-      .pipe(
-        map(response => {
-          return response;
-        }),
-        catchError(error => {
-          console.error('Register error:', error);
-          throw error;
-        })
-      );
-  }
-
-  // ============================
-  // LOGOUT
-  // ============================
-  logout(): void {
-
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('token');
-
-    this.currentUserSubject.next(null);
-  }
-
-  // ============================
-  // AUTH CHECK
-  // ============================
-  isLoggedIn(): boolean {
-    return !!this.currentUserValue;
-  }
-
-  // ============================
-  // TOKEN
-  // ============================
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
-
-  // ============================
-  // HEADERS
-  // ============================
-  getAuthHeaders(): HttpHeaders {
-
-    const token = this.getToken();
-
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  // ============================
-  // RESET PASSWORD
-  // ============================
-  resetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { email });
-  }
-
-  // ============================
-  // VERIFY TOKEN
-  // ============================
-  verifyToken(): Observable<boolean> {
-
-    const token = this.getToken();
-
-    if (!token) {
-      return of(false);
-    }
-
-    return this.http.get<any>(`${this.apiUrl}/verify-token`, {
-      headers: this.getAuthHeaders()
-    }).pipe(
-      map(res => res.success as boolean),
-      catchError(() => {
-        this.logout();
-        return of(false);
+ 
+  // Step 2 — tenantId ke saath final login
+  login(email: string, password: string, tenantId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { email, password, tenantId }).pipe(
+      tap((res: any) => {
+        const d = res?.data; // backend ApiResponse<LoginResponseDto> wrap karta hai
+        if (!d) return;
+ 
+        // Token
+        localStorage.setItem('auth_token', d.token);
+ 
+        // TenantId (alag key — asaan access ke liye)
+        localStorage.setItem('auth_tenantId', d.tenantId.toString());
+ 
+        // Poora user object
+        const user = {
+          userId:      d.userId,
+          name:        d.name,
+          email:       d.email,
+          role:        d.roleName,
+          tenantId:    d.tenantId,
+          tenantName:  d.tenantName,
+          isSuperAdmin: d.isSuperAdmin,
+          expiresAt:   d.expiresAt,
+          permissions: d.permissions || []
+        };
+        localStorage.setItem('auth_user', JSON.stringify(user));
+ 
+        this.currentUser.next(user);
       })
     );
   }
+ 
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_tenantId');
+    localStorage.removeItem('auth_user');
+    this.currentUser.next(null);
+    this.router.navigate(['/login']);
+  }
+ 
+  // Helpers
+  getToken(): string    { return localStorage.getItem('auth_token') || ''; }
+  getTenantId(): number { return parseInt(localStorage.getItem('auth_tenantId') || '0'); }
+  getUser(): any        { return this.currentUser.value; }
+  isLoggedIn(): boolean { return !!localStorage.getItem('auth_token'); }
+ 
+  private loadUser(): any {
+    try {
+      const raw = localStorage.getItem('auth_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+
 }

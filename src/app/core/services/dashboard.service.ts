@@ -2,12 +2,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DashboardData } from 'src/app/models/dashboard.model';
-// import { environment } from 'src/environments-old/environment.prod';
-import { environment } from 'src/app/environments/environment.prod';
+import { environment } from 'src/environments-old/environment-old';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private apiUrl = environment.apiUrl + 'dashboard';
+
+private apiUrl = `${environment.apiUrl}Dashboard`;
   constructor(private https: HttpClient) {}
 
   private getHeaders() {

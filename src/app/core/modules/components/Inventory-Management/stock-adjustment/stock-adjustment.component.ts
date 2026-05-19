@@ -41,8 +41,8 @@ export class StockAdjustmentComponent implements OnInit {
   }
 
   onProductSelect(index: number, productId: string) {
-    const p = this.productList.find(x => x.id === productId);
-    if (p) { this.adjustment.items[index].rate = p.rate; }
+    const p = this.productList.find(x => x.productId === Number(productId));
+    if (p) { this.adjustment.items[index].rate = p.price; }
   }
 
   removeItem(i: number) { this.adjustment.items.splice(i, 1); }

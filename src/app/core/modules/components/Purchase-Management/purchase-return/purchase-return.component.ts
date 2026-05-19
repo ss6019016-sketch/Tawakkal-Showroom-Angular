@@ -24,7 +24,7 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   onBillSelect() {
-    const bill = this.billList.find(b => b.id === this.selectedBillId);
+    const bill = this.billList.find(b => b.billId === Number(this.selectedBillId));
     if (bill) {
       this.selectedBill = bill;
       this.returnItems = bill.items.map(i => ({

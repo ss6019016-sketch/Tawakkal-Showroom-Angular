@@ -12,7 +12,7 @@ export interface SalesInvoice {
   id?: string;
   invoiceNo: string;
   invoiceDate: string;
-  customerId: string;
+  customerId: number;
   customerName?: string;
   totalAmount?: number;
   notes?: string;

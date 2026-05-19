@@ -10,10 +10,12 @@ import { Customer } from 'src/app/models/customer.model';
 export class CustomerMasterComponent implements OnInit {
 
   customer: Customer = this.getEmpty();
+
   customerList: Customer[] = [];
+  paginatedCustomers: Customer[] = [];
+
   editMode = false;
-  paginatedCustomers: any[] = [];
-  editId: string | null = null;
+  editId: number | null = null;
 
   constructor(private customerService: CustomerService) {}
 
@@ -23,48 +25,83 @@ export class CustomerMasterComponent implements OnInit {
 
   load() {
     this.customerService.getAll().subscribe({
-      next: (res) => this.customerList = res,
+      next: (res) => {
+        console.log(res);
+        this.customerList = res;
+      },
       error: (err) => console.error(err)
     });
   }
 
   onPageChange(data: Customer[]) {
-  this.paginatedCustomers = data;
-}
+    this.paginatedCustomers = data;
+  }
 
   onSubmit(form: any) {
+
     if (form.invalid) return;
 
     if (this.editMode && this.editId) {
-      this.customer.id = this.editId;
-      this.customerService.update(this.customer).subscribe(() => {
-        this.load(); this.reset();
+
+      this.customer.customerId = this.editId;
+
+      this.customerService.update(this.customer).subscribe({
+        next: () => {
+          this.load();
+          this.reset();
+        },
+        error: (err) => console.error(err)
       });
+
     } else {
-      this.customerService.create(this.customer).subscribe(() => {
-        this.load(); this.reset();
+
+      this.customerService.create(this.customer).subscribe({
+        next: () => {
+          this.load();
+          this.reset();
+        },
+        error: (err) => console.error(err)
       });
+
     }
   }
 
   edit(c: Customer) {
+
     this.customer = { ...c };
+
     this.editMode = true;
-    this.editId = c.id!;
+
+    this.editId = c.customerId!;
   }
 
-  delete(id: string) {
+  delete(id: number) {
+
     if (!confirm('Customer delete karna chahte ho?')) return;
-    this.customerService.delete(id).subscribe(() => this.load());
+
+    this.customerService.delete(id).subscribe({
+      next: () => this.load(),
+      error: (err) => console.error(err)
+    });
   }
 
   reset() {
+
     this.customer = this.getEmpty();
+
     this.editMode = false;
+
     this.editId = null;
   }
 
   getEmpty(): Customer {
-    return { name: '', email: '', phone: '', city: '', address: '' };
+
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: ''
+    };
   }
 }

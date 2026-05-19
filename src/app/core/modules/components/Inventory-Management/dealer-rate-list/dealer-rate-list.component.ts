@@ -24,9 +24,9 @@ export class DealerRateListComponent implements OnInit {
 
   load() { this.inventoryService.getDealerRates().subscribe(res => this.dealerRates = res); }
 
-  onProductSelect(productId: string) {
-    const p = this.productList.find(x => x.id === productId);
-    if (p) this.dealerRate.rate = p.rate;
+  onProductSelect(productId: number) {
+    const p = this.productList.find(x => x.productId === productId);
+    if (p) this.dealerRate.rate = p.price;
   }
 
   onSubmit(form: any) {

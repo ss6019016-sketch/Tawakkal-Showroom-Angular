@@ -1,6 +1,7 @@
 export interface PurchaseBillItem {
-  id?: string;
-  purchaseBillId?: string;
+  itemId?: number;       // ✅ id → itemId
+  billId?: number;       // ✅ grouping ke liye
+  productId?: number;
   productName: string;
   description?: string;
   qty: number;
@@ -9,10 +10,10 @@ export interface PurchaseBillItem {
 }
 
 export interface PurchaseBill {
-  id?: string;
+  billId?: number;           // ✅ id → billId (API se match)
   billNo: string;
   billDate: string;
-  vendorId: string;
+  vendorId: number | null;
   vendorName?: string;
   totalAmount?: number;
   notes?: string;

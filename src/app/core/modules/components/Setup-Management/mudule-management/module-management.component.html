@@ -1,0 +1,356 @@
+<div class="container-fluid px-4 py-3">
+
+  <!-- ============================================= -->
+  <!-- HEADER -->
+  <!-- ============================================= -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-0 fw-bold">
+        <i class="bi bi-grid-3x3-gap me-2 text-primary"></i>
+        <span *ngIf="activeTab === 'modules'">Module Management</span>
+        <span *ngIf="activeTab === 'pages'">
+          <button class="btn btn-sm btn-outline-secondary me-2" (click)="backToModules()">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          Pages — <span class="text-primary">{{ selectedModuleForPages?.name }}</span>
+        </span>
+      </h4>
+      <small class="text-muted">Modules aur Pages manage karo</small>
+    </div>
+
+    <!-- TENANT SELECTOR -->
+    <div class="d-flex align-items-center gap-2">
+      <label class="form-label mb-0 text-muted small">Tenant:</label>
+      <select class="form-select form-select-sm" style="width:200px"
+              [(ngModel)]="selectedTenantId" (change)="onTenantChange()">
+        <option *ngFor="let t of tenantList" [value]="t.id">{{ t.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- ALERTS -->
+  <!-- ============================================= -->
+  <div *ngIf="successMsg" class="alert alert-success alert-dismissible py-2 fade show">
+    <i class="bi bi-check-circle me-2"></i>{{ successMsg }}
+  </div>
+  <div *ngIf="errorMsg" class="alert alert-danger alert-dismissible py-2 fade show">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ errorMsg }}
+  </div>
+
+  <!-- ============================================================================================= -->
+  <!-- TAB: MODULES -->
+  <!-- ============================================================================================= -->
+  <div *ngIf="activeTab === 'modules'">
+
+    <!-- MODULE FORM -->
+    <div *ngIf="showModuleForm" class="card border-0 shadow-sm mb-3">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
+        <span><i class="bi bi-grid me-2"></i>{{ moduleEditMode ? 'Module Edit Karo' : 'Naya Module' }}</span>
+        <button class="btn-close btn-close-white btn-sm" (click)="cancelModuleForm()"></button>
+      </div>
+      <div class="card-body">
+        <form #moduleForm="ngForm" (ngSubmit)="onModuleSubmit(moduleForm)">
+          <div class="row g-3">
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Module Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-sm"
+                     [(ngModel)]="module.name" name="name" required
+                     placeholder="e.g. Purchase Management">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold">Icon (Bootstrap Icon)</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">
+                  <i class="bi bi-{{module.icon || 'box'}}"></i>
+                </span>
+                <input type="text" class="form-control"
+                       [(ngModel)]="module.icon" name="icon"
+                       placeholder="e.g. bag-check, cart">
+              </div>
+              <div class="form-text">
+                <a href="https://icons.getbootstrap.com" target="_blank">Icons list dekho</a>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Sort Order <span class="text-danger">*</span></label>
+              <input type="number" class="form-control form-control-sm"
+                     [(ngModel)]="module.sortOrder" name="sortOrder" required min="1"
+                     placeholder="1">
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Status</label>
+              <div class="form-check form-switch mt-1">
+                <input class="form-check-input" type="checkbox"
+                       [(ngModel)]="module.isActive" name="isActive" role="switch">
+                <label class="form-check-label small">{{ module.isActive ? 'Active' : 'Inactive' }}</label>
+              </div>
+            </div>
+
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary btn-sm w-100"
+                      [disabled]="moduleForm.invalid">
+                <i class="bi bi-check-lg"></i>
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODULE TABLE -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold text-secondary small">
+          <i class="bi bi-list-ul me-1"></i>Modules ({{ moduleList.length }})
+        </span>
+        <button class="btn btn-primary btn-sm" (click)="newModule()" *ngIf="!showModuleForm">
+          <i class="bi bi-plus-lg me-1"></i>Naya Module
+        </button>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3" style="width:50px">#</th>
+                <th>Module Name</th>
+                <th>Icon</th>
+                <th>Sort Order</th>
+                <th>Status</th>
+                <th>Pages</th>
+                <th class="text-end pe-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="moduleList.length === 0">
+                <td colspan="7" class="text-center text-muted py-4">
+                  <i class="bi bi-inbox fs-4 d-block mb-1"></i>
+                  Koi module nahi mila
+                </td>
+              </tr>
+              <tr *ngFor="let m of moduleList; let i = index">
+                <td class="ps-3 text-muted small">{{ i + 1 }}</td>
+                <td>
+                  <span class="fw-semibold">
+                    <i class="bi bi-{{m.icon || 'box'}} me-2 text-primary"></i>{{ m.name }}
+                  </span>
+                </td>
+                <td><code class="small">{{ m.icon }}</code></td>
+                <td>{{ m.sortOrder }}</td>
+                <td>
+                  <span class="badge" [ngClass]="m.isActive ? 'bg-success' : 'bg-secondary'">
+                    {{ m.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-outline-info btn-sm" (click)="managePages(m)">
+                    <i class="bi bi-file-earmark-text me-1"></i>Pages Manage
+                  </button>
+                </td>
+                <td class="text-end pe-3">
+                  <button class="btn btn-outline-primary btn-sm me-1" (click)="editModule(m)"
+                          title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" (click)="deleteModule(m.id!)"
+                          title="Delete">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /TAB MODULES -->
+
+
+  <!-- ============================================================================================= -->
+  <!-- TAB: PAGES -->
+  <!-- ============================================================================================= -->
+  <div *ngIf="activeTab === 'pages'">
+
+    <!-- PAGE FORM -->
+    <div *ngIf="showPageForm" class="card border-0 shadow-sm mb-3">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-2">
+        <span><i class="bi bi-file-earmark-plus me-2"></i>{{ pageEditMode ? 'Page Edit Karo' : 'Naya Page' }}</span>
+        <button class="btn-close btn-close-white btn-sm" (click)="cancelPageForm()"></button>
+      </div>
+      <div class="card-body">
+        <form #pageForm="ngForm" (ngSubmit)="onPageSubmit(pageForm)">
+          <div class="row g-3">
+
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold">Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-sm"
+                     [(ngModel)]="page.title" name="title" required
+                     placeholder="e.g. Sales Invoice">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold">Path <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-sm"
+                     [(ngModel)]="page.path" name="path" required
+                     placeholder="e.g. /sales-invoice">
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Link</label>
+              <input type="text" class="form-control form-control-sm"
+                     [(ngModel)]="page.link" name="link"
+                     placeholder="e.g. /sales-invoice">
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Icon</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">
+                  <i class="bi bi-{{page.icon || 'circle'}}"></i>
+                </span>
+                <input type="text" class="form-control"
+                       [(ngModel)]="page.icon" name="icon"
+                       placeholder="e.g. circle">
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <label class="form-label small fw-semibold">Serial #</label>
+              <input type="number" class="form-control form-control-sm"
+                     [(ngModel)]="page.serialNumber" name="serialNumber" required min="1">
+            </div>
+
+            <div class="col-md-1">
+              <label class="form-label small fw-semibold">Type</label>
+              <select class="form-select form-select-sm"
+                      [(ngModel)]="page.type" name="type">
+                <option value="Page">Page</option>
+                <option value="Group">Group</option>
+              </select>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Description</label>
+              <input type="text" class="form-control form-control-sm"
+                     [(ngModel)]="page.description" name="description"
+                     placeholder="Optional description">
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold">Parent Page</label>
+              <select class="form-select form-select-sm"
+                      [(ngModel)]="page.parentId" name="parentId">
+                <option [ngValue]="null">-- None --</option>
+                <option *ngFor="let p of pageList" [value]="p.pageId"
+                        [disabled]="p.pageId === page.pageId">
+                  {{ p.title }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end gap-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox"
+                       [(ngModel)]="page.isHidden" name="isHidden" role="switch">
+                <label class="form-check-label small">Hidden</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox"
+                       [(ngModel)]="page.isCollapsed" name="isCollapsed" role="switch">
+                <label class="form-check-label small">Collapsed</label>
+              </div>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      (click)="cancelPageForm()">Cancel</button>
+              <button type="submit" class="btn btn-success btn-sm"
+                      [disabled]="pageForm.invalid">
+                <i class="bi bi-check-lg me-1"></i>{{ pageEditMode ? 'Update' : 'Save' }}
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE TABLE -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold text-secondary small">
+          <i class="bi bi-file-earmark-text me-1"></i>
+          {{ selectedModuleForPages?.name }} — Pages ({{ pageList.length }})
+        </span>
+        <button class="btn btn-success btn-sm" (click)="newPage()" *ngIf="!showPageForm">
+          <i class="bi bi-plus-lg me-1"></i>Naya Page
+        </button>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3" style="width:50px">#</th>
+                <th>Title</th>
+                <th>Path</th>
+                <th>Icon</th>
+                <th>Serial</th>
+                <th>Type</th>
+                <th>Hidden</th>
+                <th class="text-end pe-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="pageList.length === 0">
+                <td colspan="8" class="text-center text-muted py-4">
+                  <i class="bi bi-file-earmark fs-4 d-block mb-1"></i>
+                  Koi page nahi — "Naya Page" se add karo
+                </td>
+              </tr>
+              <tr *ngFor="let p of pageList; let i = index">
+                <td class="ps-3 text-muted small">{{ i + 1 }}</td>
+                <td>
+                  <i class="bi bi-{{p.icon || 'circle'}} me-2 text-success"></i>
+                  <span class="fw-semibold">{{ p.title }}</span>
+                </td>
+                <td><code class="small text-muted">{{ p.path }}</code></td>
+                <td><code class="small">{{ p.icon }}</code></td>
+                <td>{{ p.serialNumber }}</td>
+                <td>
+                  <span class="badge bg-light text-dark border">{{ p.type }}</span>
+                </td>
+                <td>
+                  <span *ngIf="p.isHidden" class="badge bg-warning text-dark">Hidden</span>
+                  <span *ngIf="!p.isHidden" class="text-muted small">—</span>
+                </td>
+                <td class="text-end pe-3">
+                  <button class="btn btn-outline-primary btn-sm me-1" (click)="editPage(p)"
+                          title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" (click)="deletePage(p.pageId!)"
+                          title="Delete">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /TAB PAGES -->
+
+</div>

@@ -1,80 +1,99 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { ModulePageService, ModuleMenuDto } from 'src/app/core/services/module-page.service';
+
+interface MenuItem {
+  label:     string;
+  icon:      string;
+  route?:    string;
+  children?: MenuItem[];
+  expanded?: boolean;
+}
 
 @Component({
-  selector: 'app-sidebar',
+  selector:    'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls:   ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
+  userName   = '';
+  userRole   = '';
+  tenantName = '';
+  menuItems: MenuItem[] = [];
+  isLoading  = true;
 
-  isCollapsed = false;
-  currentRoute: string = '';
-  activeMenu: string | null = null;
-  expandedMenus: { [key: string]: boolean } = {
-    setup: false,
-    purchase: false,
-    sales: false,
-    accounts: false,
-    inventory: false
-  };
+  private userSub: Subscription = new Subscription();
 
-  constructor(private router: Router) {
-    // Track current route for active state
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      this.currentRoute = event.url;
-      this.autoExpandMenu(event.url);
+  constructor(
+    private auth:            AuthService,
+    private router:          Router,
+    private modulePageService: ModulePageService
+  ) {}
+
+  ngOnInit(): void {
+    this.userSub = this.auth.currentUser.subscribe(user => {
+      if (user) {
+        this.userName   = user.name       || '';
+        this.userRole   = user.role       || '';
+        this.tenantName = user.tenantName || '';
+        this.loadMenu();
+      }
     });
   }
 
-  ngOnInit(): void {
-    // Get initial route
-    this.currentRoute = this.router.url;
-    this.autoExpandMenu(this.currentRoute);
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe();
   }
 
-  // ============================================
-  // TOGGLE MENU
-  // ============================================
- toggleMenu(menu: string) {
-    this.activeMenu = this.activeMenu === menu ? null : menu;
+  loadMenu(): void {
+    this.isLoading = true;
+    this.modulePageService.getModulesAndPages().subscribe({
+      next: (modules: ModuleMenuDto[]) => {
+        this.menuItems = modules.map(mod => ({
+          label:    mod.moduleName,
+          icon:     mod.moduleIcon,
+          expanded: this.isModuleActive(mod),
+          children: mod.pages
+            .filter(p => !p.isHidden)
+            .map(p => ({
+              label: p.title,
+              icon:  p.icon,
+              route: p.path
+            }))
+        }));
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Menu load failed:', err);
+        this.isLoading = false;
+      }
+    });
   }
 
-  // ============================================
-  // AUTO EXPAND MENU BASED ON ROUTE
-  // ============================================
-  autoExpandMenu(url: string): void {
-    if (url.includes('/users') || url.includes('/roles')) {
-      this.expandedMenus['setup'] = true;
-    } else if (url.includes('/vendor') || url.includes('/purchase')) {
-      this.expandedMenus['purchase'] = true;
-    } else if (url.includes('/customer') || url.includes('/sales')) {
-      this.expandedMenus['sales'] = true;
-    } else if (url.includes('/chart-of-accounts') || url.includes('/payment') || 
-               url.includes('/receipt') || url.includes('/cash-book') || 
-               url.includes('/accounts-reports')) {
-      this.expandedMenus['accounts'] = true;
-    } else if (url.includes('/warehouse') || url.includes('/item') || 
-               url.includes('/stock') || url.includes('/inventory') || 
-               url.includes('/dealer')) {
-      this.expandedMenus['inventory'] = true;
-    }
+  isModuleActive(mod: ModuleMenuDto): boolean {
+    return mod.pages.some(p => p.path && this.router.url.startsWith(p.path));
   }
 
-  // ============================================
-  // CHECK IF ROUTE IS ACTIVE
-  // ============================================
-  isRouteActive(route: string): boolean {
-    return this.currentRoute === route || this.currentRoute.startsWith(route + '/');
+  toggle(item: MenuItem): void {
+    item.expanded = !item.expanded;
   }
 
-  // ============================================
-  // TOGGLE COLLAPSE
-  // ============================================
-    toggleCollapse() {
-    this.isCollapsed = !this.isCollapsed;
+  isActive(route: string): boolean {
+    return this.router.url === route;
   }
+
+  isParentActive(item: MenuItem): boolean {
+    return item.children?.some(child =>
+      child.route ? this.router.url.startsWith(child.route) : false
+    ) ?? false;
+  }
+
+  logout(): void {
+    this.auth.logout();
+  }
+
+
+
 }

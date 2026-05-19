@@ -27,7 +27,7 @@
 
           <option value="">-- Select a bill. --</option>
 
-          <option *ngFor="let b of billList" [value]="b.id">
+          <option *ngFor="let b of billList" [value]="b.billId">
             {{ b.billNo }} | {{ b.vendorName }} | {{ b.billDate | date:'dd/MM/yyyy' }}
           </option>
 

@@ -10,6 +10,7 @@
   <div class="form-list-layout">
 
     <!-- ================= FORM ================= -->
+
     <div class="form-panel erp-card animate-left">
 
       <div class="erp-card-header success text-white">
@@ -18,68 +19,105 @@
 
       <div class="erp-card-body">
 
-        <form #customerForm="ngForm" (ngSubmit)="onSubmit(customerForm)">
+        <form #customerForm="ngForm"
+              (ngSubmit)="onSubmit(customerForm)">
 
           <div class="row">
 
-            <div class="col-md-6 mb-3">
-              <label>Customer Name *</label>
-              <input type="text"
-                     class="form-control"
-                     [(ngModel)]="customer.name"
-                     name="name"
-                     required
-                     placeholder="Customer name">
-            </div>
+            <!-- FIRST NAME -->
 
             <div class="col-md-6 mb-3">
+
+              <label>First Name *</label>
+
+              <input type="text"
+                     class="form-control"
+                     [(ngModel)]="customer.firstName"
+                     name="firstName"
+                     required
+                     placeholder="First Name">
+
+            </div>
+
+            <!-- LAST NAME -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>Last Name *</label>
+
+              <input type="text"
+                     class="form-control"
+                     [(ngModel)]="customer.lastName"
+                     name="lastName"
+                     required
+                     placeholder="Last Name">
+
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="col-md-6 mb-3">
+
               <label>Email *</label>
+
               <input type="email"
                      class="form-control"
                      [(ngModel)]="customer.email"
                      name="email"
                      required
                      placeholder="Email">
+
             </div>
 
+            <!-- PHONE -->
+
             <div class="col-md-6 mb-3">
-              <label>Phone *</label>
+
+              <label>Phone</label>
+
               <input type="text"
                      class="form-control"
                      [(ngModel)]="customer.phone"
                      name="phone"
-                     required
                      placeholder="Phone">
+
             </div>
 
-            <div class="col-md-6 mb-3">
-              <label>City</label>
-              <input type="text"
-                     class="form-control"
-                     [(ngModel)]="customer.city"
-                     name="city"
-                     placeholder="City">
-            </div>
+            <!-- ADDRESS -->
 
             <div class="col-12 mb-3">
+
               <label>Address</label>
+
               <textarea class="form-control"
                         [(ngModel)]="customer.address"
                         name="address"
-                        rows="2"></textarea>
+                        rows="2">
+              </textarea>
+
             </div>
 
           </div>
 
+          <!-- BUTTONS -->
+
           <div class="d-flex gap-2">
 
-            <button type="submit" class="btn btn-success">
+            <button type="submit"
+                    class="btn btn-success">
+
               <i class="bi bi-check-lg"></i>
+
               {{ editMode ? 'Update' : 'Save' }}
+
             </button>
 
-            <button type="button" class="btn btn-light" (click)="reset()">
+            <button type="button"
+                    class="btn btn-light"
+                    (click)="reset()">
+
               Reset
+
             </button>
 
           </div>
@@ -87,9 +125,11 @@
         </form>
 
       </div>
+
     </div>
 
     <!-- ================= LIST ================= -->
+
     <div class="list-panel erp-card animate-right">
 
       <div class="erp-card-header dark text-white">
@@ -101,36 +141,48 @@
         <table class="erp-table">
 
           <thead>
+
             <tr>
               <th>#</th>
-              <th>Name</th>
+              <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>City</th>
+              <th>Address</th>
               <th>Actions</th>
             </tr>
+
           </thead>
 
           <tbody>
 
-          <tr *ngFor="let c of paginatedCustomers; let i = index">
+            <tr *ngFor="let c of paginatedCustomers; let i = index">
 
               <td>{{ i + 1 }}</td>
-              <td class="fw-semibold">{{ c.name }}</td>
+
+              <td class="fw-semibold">
+                {{ c.fullName }}
+              </td>
+
               <td>{{ c.email }}</td>
+
               <td>{{ c.phone }}</td>
-              <td>{{ c.city }}</td>
+
+              <td>{{ c.address }}</td>
 
               <td>
 
                 <button class="btn btn-sm btn-outline-primary me-1"
                         (click)="edit(c)">
+
                   <i class="bi bi-pencil"></i>
+
                 </button>
 
                 <button class="btn btn-sm btn-outline-danger"
-                        (click)="delete(c.id!)">
+                        (click)="delete(c.customerId!)">
+
                   <i class="bi bi-trash"></i>
+
                 </button>
 
               </td>
@@ -138,9 +190,14 @@
             </tr>
 
             <tr *ngIf="customerList.length === 0">
-              <td colspan="6" class="empty-state">
+
+              <td colspan="6"
+                  class="empty-state">
+
                 Koi customer nahi
+
               </td>
+
             </tr>
 
           </tbody>
@@ -148,12 +205,17 @@
         </table>
 
       </div>
+
+      <!-- PAGINATION -->
+
       <app-pagination
-  [data]="customerList"
-  [pageSize]="5"
-  (pagedData)="onPageChange($event)">
-</app-pagination>
+        [data]="customerList"
+        [pageSize]="5"
+        (pagedData)="onPageChange($event)">
+      </app-pagination>
+
     </div>
 
   </div>
+
 </div>

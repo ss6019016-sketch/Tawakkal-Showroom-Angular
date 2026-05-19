@@ -1,61 +1,69 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Tenant } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-
-  email = '';
+export class LoginComponent {
+  step: 'credentials' | 'tenant' = 'credentials';
+ 
+  email    = '';
   password = '';
-  showPassword = false;
-  returnUrl = '/dashboard';
+  tenants: any[] = [];
+  selectedTenantId: number | null = null;
+ 
   isLoading = false;
-  errorMessage = '';
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
-    }
-
-    this.returnUrl =
-      this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+  error     = '';
+ 
+  constructor(private auth: AuthService, private router: Router) {
+    if (this.auth.isLoggedIn()) this.router.navigate(['/dashboard']);
   }
-
-  onLogin(): void {
-
-    this.errorMessage = '';
-
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Email aur password required hai';
-      return;
-    }
-
+ 
+  // Step 1
+  onGetTenants(): void {
+    if (!this.email || !this.password) { this.error = 'Email aur password required hain'; return; }
     this.isLoading = true;
-
-    this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+    this.error = '';
+ 
+    this.auth.getTenants(this.email, this.password).subscribe({
+      next: (res: any) => {
         this.isLoading = false;
-        this.router.navigate([this.returnUrl]);
+        const tenants: any[] = res?.data || [];
+ 
+        if (tenants.length === 0) { this.error = 'Koi tenant assign nahi — Admin se contact karein'; return; }
+ 
+        // Sirf ek tenant hai — seedha login
+        if (tenants.length === 1) { this.doLogin(tenants[0].tenantId); return; }
+ 
+        // Multiple — select karo
+        this.tenants = tenants;
+        this.step = 'tenant';
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage =
-          err.error?.message || 'Invalid email ya password';
+        this.error = err?.error?.message || 'Invalid email ya password';
       }
     });
   }
-
-  togglePassword(): void {
-    this.showPassword = !this.showPassword;
+ 
+  // Step 2
+  onLogin(): void {
+    if (!this.selectedTenantId) { this.error = 'Branch select karein'; return; }
+    this.doLogin(this.selectedTenantId);
   }
+ 
+  private doLogin(tenantId: number): void {
+    this.isLoading = true;
+    this.error = '';
+ 
+    this.auth.login(this.email, this.password, tenantId).subscribe({
+      next: () => { this.isLoading = false; this.router.navigate(['/dashboard']); },
+      error: (err) => { this.isLoading = false; this.error = err?.error?.message || 'Login fail ho gayi'; }
+    });
+  }
+
 }

@@ -1,16 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/app/environments/environment.prod';
 import { Vendor } from 'src/app/models/vendor.model';
+import { environment } from 'src/environments-old/environment-old';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VendorService {
 
-  private apiUrl = environment.apiUrl + 'vendor';
-
+private apiUrl = `${environment.apiUrl}Vendor`;
   constructor(private http: HttpClient) {}
 
   // 🔐 agar JWT use kar raha hai
