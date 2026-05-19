@@ -1,79 +1,102 @@
-<header class="app-header">
-  <div class="header-top flex-row justify-between align-center">
-    <div class="header-left flex-row align-center gap-3">
-      <button nz-button nzType="text" class="nav-toggle" (click)="toggleSidebar()">
-        <i nz-icon nzType="menu"></i>
-        <span>MAIN MENU</span>
-      </button>
-      <div class="company-name">TAWAKKAL SHOWROOM</div>
-    </div>
+<div class="navbar-wrapper d-flex align-items-center justify-content-between w-100">
 
-    <div class="header-right flex-row align-center gap-3">
-      <span class="connection-status">Connected as <strong>{{ userFullName || 'Sultan' }}</strong></span>
-      <button nz-button nzType="default" nzShape="round" (click)="logout()">Sign Out</button>
+  <!-- LEFT: Sidebar toggle -->
+  <div class="col-1">
+    <span
+      class="trigger"
+      nz-icon
+      nzType="menu-fold"
+      (click)="toggleSidebar()">
+    </span>
+  </div>
+
+  <!-- CENTER: Search -->
+  <div class="col-4">
+    <div class="autocomplete-container d-flex align-items-center">
+      <nz-input-group [nzSuffix]="suffixIcon">
+        <input
+          placeholder="Search Pages"
+          nz-input
+          [(ngModel)]="searchText"
+          [nzAutocomplete]="auto"
+          (ngModelChange)="onSearchChange()" />
+        <nz-autocomplete #auto>
+          <nz-auto-option
+            *ngFor="let option of searchOptions"
+            [nzValue]="option">
+            {{ option }}
+          </nz-auto-option>
+        </nz-autocomplete>
+      </nz-input-group>
+      <ng-template #suffixIcon>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
     </div>
   </div>
 
-  <div class="header-bottom flex-row justify-between align-center">
-    <div class="header-actions flex-row align-center gap-2">
-      <button nz-button nzType="default" nzShape="round" routerLink="/product-master">
-        <i nz-icon nzType="shopping-cart"></i>
-        <span>Product Master</span>
-      </button>
-      <button nz-button nzType="default" nzShape="round" routerLink="/sales-invoice">
-        <i nz-icon nzType="file-text"></i>
-        <span>Sales Invoice</span>
-      </button>
-      <button nz-button nzType="default" nzShape="round">
-        <i nz-icon nzType="check-circle"></i>
-        <span>Tawakkal Stamp</span>
-      </button>
-    </div>
+  <!-- RIGHT: User info + dropdown -->
+  <div class="d-flex align-items-center">
 
-    <div class="header-actions flex-row align-center gap-2">
-      <button nz-button nzType="default" nzShape="circle" nz-tooltip nzTitle="Notifications" (click)="openNotifications()">
-        <i nz-icon nzType="bell"></i>
-      </button>
-      <button nz-button nzType="default" nzShape="circle" nz-tooltip nzTitle="Fullscreen" (click)="toggleFullscreen()">
-        <i nz-icon [nzType]="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"></i>
-      </button>
+    <!-- Fullscreen toggle -->
+    <button nz-button nzType="text" (click)="toggleFullscreen()" class="me-2">
+      <span nz-icon [nzType]="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"></span>
+    </button>
 
-      <nz-dropdown nzTrigger="click">
-        <button nz-button nzType="default" nzShape="round" class="user-dropdown-btn">
-          <span class="user-avatar">
-            <ng-container *ngIf="userProfilePicture && !isLoading; else showInitials">
-              <img [src]="getProfilePictureUrl()" alt="Profile">
-            </ng-container>
-            <ng-template #showInitials>
-              <span>{{ userInitials }}</span>
-            </ng-template>
-          </span>
-          <span class="user-info">
-            <span class="user-name">{{ userFullName }}</span>
-            <span class="user-role">{{ userRole }}</span>
-          </span>
-          <i nz-icon nzType="down"></i>
-        </button>
-        <ul nz-menu nzSelectable="false" class="user-menu">
-          <li nz-menu-item (click)="navigateToProfile()">
-            <i nz-icon nzType="user"></i>
-            My Profile
-          </li>
-          <li nz-menu-item (click)="navigateToProfile()">
-            <i nz-icon nzType="key"></i>
-            Change Password
-          </li>
-          <li nz-menu-item (click)="navigateToSettings()">
-            <i nz-icon nzType="setting"></i>
-            Settings
-          </li>
-          <li nz-menu-divider></li>
-          <li nz-menu-item (click)="logout()">
-            <i nz-icon nzType="logout"></i>
-            Logout
-          </li>
-        </ul>
-      </nz-dropdown>
-    </div>
+    <!-- Notifications -->
+    <button nz-button nzType="text" class="me-3" (click)="openNotifications()">
+      <nz-badge [nzCount]="notificationCount" [nzOverflowCount]="99">
+        <span nz-icon nzType="bell"></span>
+      </nz-badge>
+    </button>
+
+    <!-- User avatar + name + dropdown -->
+    <button nz-button nzType="link" class="d-flex align-items-center p-2">
+
+      <nz-avatar
+        nzShape="square"
+        [nzSize]="40"
+        [nzSrc]="getProfilePictureUrl()"
+        *ngIf="userProfilePicture; else initials">
+      </nz-avatar>
+
+      <ng-template #initials>
+        <nz-avatar [nzText]="userInitials" [nzSize]="40"></nz-avatar>
+      </ng-template>
+
+      <div class="d-flex flex-column ms-2 text-start" (click)="navigateToProfile()">
+        <span class="fw-bold" *ngIf="!isLoading; else loadingName">{{ userFullName }}</span>
+        <ng-template #loadingName>
+          <nz-skeleton-element nzType="input" [nzActive]="true" style="width: 80px"></nz-skeleton-element>
+        </ng-template>
+        <span class="text-muted small">{{ userEmail }}</span>
+      </div>
+
+      <!-- Dropdown arrow -->
+      <span
+        nz-dropdown
+        [nzDropdownMenu]="userMenu"
+        nzTrigger="click"
+        class="ms-2"
+        (click)="$event.stopPropagation()">
+        <i nz-icon nzType="down"></i>
+      </span>
+    </button>
+
+    <!-- Dropdown menu -->
+    <nz-dropdown-menu #userMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="navigateToProfile()">
+          <i nz-icon nzType="user" class="me-2"></i> Profile
+        </li>
+        <li nz-menu-item (click)="navigateToSettings()">
+          <i nz-icon nzType="setting" class="me-2"></i> Settings
+        </li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item nzDanger (click)="logout()">
+          <i nz-icon nzType="logout" class="me-2"></i> Logout
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+
   </div>
-</header>
+</div>

@@ -743,3 +743,23 @@ textarea.form-control {
   align-items: center;
   justify-content: center;
 }
+
+
+/* === ADD THIS TO YOUR GLOBAL styles.css === */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Fix ng-zorro default layout overrides */
+.ant-layout {
+  background: transparent !important;
+}

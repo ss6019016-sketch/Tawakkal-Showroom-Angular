@@ -18,17 +18,19 @@ interface MenuItem {
   styleUrls:   ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+
   userName   = '';
   userRole   = '';
   tenantName = '';
   menuItems: MenuItem[] = [];
   isLoading  = true;
+  isCollapsed = false;
 
   private userSub: Subscription = new Subscription();
 
   constructor(
-    private auth:            AuthService,
-    private router:          Router,
+    private auth:              AuthService,
+    private router:            Router,
     private modulePageService: ModulePageService
   ) {}
 
@@ -46,6 +48,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.userSub.unsubscribe();
   }
+
+  // ============================================
+  // MENU LOAD
+  // ============================================
 
   loadMenu(): void {
     this.isLoading = true;
@@ -72,6 +78,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ============================================
+  // HELPERS
+  // ============================================
+
   isModuleActive(mod: ModuleMenuDto): boolean {
     return mod.pages.some(p => p.path && this.router.url.startsWith(p.path));
   }
@@ -90,10 +100,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     ) ?? false;
   }
 
+  // ============================================
+  // LOGOUT
+  // ============================================
+
   logout(): void {
     this.auth.logout();
   }
-
-
-
 }

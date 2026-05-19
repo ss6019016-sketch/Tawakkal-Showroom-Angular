@@ -10,7 +10,7 @@ import { Customer } from 'src/app/models/customer.model';
 export class CustomerMasterComponent implements OnInit {
 
   customer: Customer = this.getEmpty();
-
+loading = false;
   customerList: Customer[] = [];
   paginatedCustomers: Customer[] = [];
 

@@ -42,7 +42,6 @@ import { ModuleManagementComponent } from './core/modules/components/Setup-Manag
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
 import en from '@angular/common/locales/en';
-
 registerLocaleData(en);
 
 @NgModule({

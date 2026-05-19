@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -17,6 +18,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 
 @NgModule({
   exports: [
@@ -37,7 +42,11 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzToolTipModule,
     NzDividerModule,
     NzTypographyModule,
-    NzSpinModule
+    NzSpinModule,
+    NzTagModule,
+    NzEmptyModule,
+    NzSkeletonModule,
+    NzAutocompleteModule
   ]
 })
 export class NgZorroModule {}

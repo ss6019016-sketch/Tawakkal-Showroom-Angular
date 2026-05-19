@@ -1,32 +1,30 @@
 <div class="page-container">
 
   <!-- HEADER -->
-  <div class="flex justify-content-between align-items-center mb-4 animate-left">
+  <div
+    class="d-flex justify-content-between align-items-center mb-4 animate-left flex-wrap gap-3">
 
     <div>
-      <div class="page-title mb-0">
-        <i class="bi bi-speedometer2"></i>
+      <h2 class="page-title mb-1">
+        <i nz-icon nzType="dashboard" nzTheme="outline"></i>
         {{ getGreeting() }}, {{ currentUser }}!
-      </div>
+      </h2>
 
       <div class="page-subtitle">
         {{ currentDate | date:'EEEE, dd MMMM yyyy' }}
       </div>
     </div>
 
-    <div>
-      <span class="erp-badge success">
-        <span class="status-dot active"></span>
-        System Online
-      </span>
-    </div>
+    <nz-tag nzColor="success" class="erp-tag">
+      <i nz-icon nzType="check-circle" nzTheme="fill"></i>
+      System Online
+    </nz-tag>
 
   </div>
 
   <!-- LOADING -->
   <div *ngIf="loading" class="erp-spinner">
-    <div class="spinner"></div>
-    <div>Loading dashboard...</div>
+    <nz-spin nzTip="Loading dashboard..."></nz-spin>
   </div>
 
   <div *ngIf="!loading && data">
@@ -38,269 +36,435 @@
       Today Summary
     </div>
 
-    <div class="row stagger mb-4">
+    <div nz-row [nzGutter]="16" class="stagger mb-4">
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon green">
-            <i class="bi bi-cart-check"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.totalSalesToday | number:'1.0-0' }}
+      <!-- SALES -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon green">
+              <i nz-icon nzType="shopping-cart" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Today Sales</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalSalesToday | number:'1.0-0' }}
+              </div>
+              <div class="stat-label">Today Sales</div>
+            </div>
+
           </div>
-        </div>
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon red">
-            <i class="bi bi-bag-check"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.totalPurchaseToday | number:'1.0-0' }}
+      <!-- PURCHASE -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon red">
+              <i nz-icon nzType="shopping" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Today Purchase</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalPurchaseToday | number:'1.0-0' }}
+              </div>
+              <div class="stat-label">Today Purchase</div>
+            </div>
+
           </div>
-        </div>
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon blue">
-            <i class="bi bi-cash-stack"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.cashBalance | number:'1.0-0' }}
+      <!-- CASH -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon blue">
+              <i nz-icon nzType="wallet" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Cash Balance</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.cashBalance | number:'1.0-0' }}
+              </div>
+              <div class="stat-label">Cash Balance</div>
+            </div>
+
           </div>
-        </div>
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon yellow">
-            <i class="bi bi-boxes"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.stockValue | number:'1.0-0' }}
+      <!-- STOCK -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon yellow">
+              <i nz-icon nzType="appstore" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Stock Value</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.stockValue | number:'1.0-0' }}
+              </div>
+              <div class="stat-label">Stock Value</div>
+            </div>
+
           </div>
-        </div>
+        </nz-card>
       </div>
 
     </div>
 
-    <!-- ================= MONTHLY SUMMARY ================= -->
+    <!-- ================= MONTH SUMMARY ================= -->
 
     <div class="page-subtitle mb-3">
       This Month Summary
     </div>
 
-    <div class="row stagger mb-4">
+    <div nz-row [nzGutter]="16" class="stagger mb-4">
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon green">
-            <i class="bi bi-graph-up"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.totalSalesMonth | number:'1.0-0' }}
+      <!-- MONTH SALES -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon green">
+              <i nz-icon nzType="line-chart" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Monthly Sales</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalSalesMonth | number:'1.0-0' }}
+              </div>
+
+              <div class="stat-label">
+                Monthly Sales
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon red">
-            <i class="bi bi-graph-down"></i>
-          </div>
-          <div>
-            <div class="stat-value">
-              {{ data.totalPurchaseMonth | number:'1.0-0' }}
+      <!-- MONTH PURCHASE -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon red">
+              <i nz-icon nzType="fall" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Monthly Purchase</div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalPurchaseMonth | number:'1.0-0' }}
+              </div>
+
+              <div class="stat-label">
+                Monthly Purchase
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon blue">
-            <i class="bi bi-cash"></i>
-          </div>
-          <div>
-            <div class="stat-value"
-                 [class.text-success]="data.totalSalesMonth >= data.totalPurchaseMonth"
-                 [class.text-danger]="data.totalSalesMonth < data.totalPurchaseMonth">
+      <!-- PROFIT -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
 
-              {{ (data.totalSalesMonth - data.totalPurchaseMonth) | number:'1.0-0' }}
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon blue">
+              <i nz-icon nzType="dollar-circle" nzTheme="outline"></i>
+            </div>
+
+            <div>
+
+              <div
+                class="stat-value"
+                [class.text-success]="data.totalSalesMonth >= data.totalPurchaseMonth"
+                [class.text-danger]="data.totalSalesMonth < data.totalPurchaseMonth">
+
+                {{ (data.totalSalesMonth - data.totalPurchaseMonth) | number:'1.0-0' }}
+
+              </div>
+
+              <div class="stat-label">
+                Net Profit
+              </div>
 
             </div>
-            <div class="stat-label">Net Profit</div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-md-3 col-6">
-        <div class="stat-card">
-          <div class="stat-icon purple">
-            <i class="bi bi-percent"></i>
-          </div>
-          <div>
-            <div class="stat-value text-warning">
-              {{ data.totalSalesMonth > 0 ?
-                (((data.totalSalesMonth - data.totalPurchaseMonth) / data.totalSalesMonth) * 100 | number:'1.1-1') + '%'
-                : '0%' }}
+      <!-- MARGIN -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon purple">
+              <i nz-icon nzType="percentage" nzTheme="outline"></i>
             </div>
-            <div class="stat-label">Profit Margin</div>
+
+            <div>
+
+              <div class="stat-value text-warning">
+
+                {{
+                  data.totalSalesMonth > 0
+                    ? (((data.totalSalesMonth - data.totalPurchaseMonth)
+                    / data.totalSalesMonth) * 100 | number:'1.1-1') + '%'
+                    : '0%'
+                }}
+
+              </div>
+
+              <div class="stat-label">
+                Profit Margin
+              </div>
+
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
     </div>
 
     <!-- ================= COUNTS ================= -->
-    <div class="row stagger mb-4">
 
-      <div class="col-6 col-md-3">
-        <div class="stat-card">
-          <div class="stat-icon green"><i class="bi bi-people"></i></div>
-          <div>
-            <div class="stat-value">{{ data.totalCustomers }}</div>
-            <div class="stat-label">Customers</div>
+    <div nz-row [nzGutter]="16" class="stagger mb-4">
+
+      <!-- CUSTOMERS -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon green">
+              <i nz-icon nzType="team" nzTheme="outline"></i>
+            </div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalCustomers }}
+              </div>
+
+              <div class="stat-label">
+                Customers
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-6 col-md-3">
-        <div class="stat-card">
-          <div class="stat-icon blue"><i class="bi bi-truck"></i></div>
-          <div>
-            <div class="stat-value">{{ data.totalVendors }}</div>
-            <div class="stat-label">Vendors</div>
+      <!-- VENDORS -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon blue">
+              <i nz-icon nzType="car" nzTheme="outline"></i>
+            </div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalVendors }}
+              </div>
+
+              <div class="stat-label">
+                Vendors
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-6 col-md-3">
-        <div class="stat-card">
-          <div class="stat-icon yellow"><i class="bi bi-box-seam"></i></div>
-          <div>
-            <div class="stat-value">{{ data.totalProducts }}</div>
-            <div class="stat-label">Products</div>
+      <!-- PRODUCTS -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon yellow">
+              <i nz-icon nzType="inbox" nzTheme="outline"></i>
+            </div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalProducts }}
+              </div>
+
+              <div class="stat-label">
+                Products
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
-      <div class="col-6 col-md-3">
-        <div class="stat-card">
-          <div class="stat-icon purple"><i class="bi bi-person-badge"></i></div>
-          <div>
-            <div class="stat-value">{{ data.totalUsers }}</div>
-            <div class="stat-label">Users</div>
+      <!-- USERS -->
+      <div nz-col nzXs="12" nzMd="6" nzLg="6" nzXl="6">
+        <nz-card class="stat-card">
+
+          <div class="d-flex align-items-center gap-3">
+
+            <div class="stat-icon purple">
+              <i nz-icon nzType="user" nzTheme="outline"></i>
+            </div>
+
+            <div>
+              <div class="stat-value">
+                {{ data.totalUsers }}
+              </div>
+
+              <div class="stat-label">
+                Users
+              </div>
+            </div>
+
           </div>
-        </div>
+
+        </nz-card>
       </div>
 
     </div>
 
     <!-- ================= RECENT ================= -->
-    <div class="row stagger">
+
+    <div nz-row [nzGutter]="16" class="stagger">
 
       <!-- SALES -->
-      <div class="col-md-6">
+      <div nz-col nzXs="24" nzLg="12">
 
-        <div class="erp-card">
+        <nz-card
+          nzTitle="Recent Sales"
+          [nzExtra]="salesIcon">
 
-          <div class="erp-card-header success">
-            <i class="bi bi-receipt"></i> Recent Sales
-          </div>
+          <ng-template #salesIcon>
+            <i nz-icon nzType="file-text" nzTheme="outline"></i>
+          </ng-template>
 
-          <div class="erp-card-body p-0">
+          <nz-table
+            #salesTable
+            [nzData]="data.recentSales"
+            [nzFrontPagination]="false"
+            nzSize="small">
 
-            <table class="erp-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Party</th>
+                <th>Date</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
 
-              <tbody>
+            <tbody>
 
-                <tr *ngFor="let s of data.recentSales">
+              <tr *ngFor="let s of salesTable.data">
 
-                  <td>
-                    <span class="erp-badge success">{{ s.no }}</span>
-                  </td>
+                <td>
+                  <nz-tag nzColor="success">
+                    {{ s.no }}
+                  </nz-tag>
+                </td>
 
-                  <td>{{ s.partyName }}</td>
+                <td>{{ s.partyName }}</td>
 
-                  <td class="text-muted fs-sm">
-                    {{ s.date | date:'dd/MM/yy' }}
-                  </td>
+                <td class="text-muted">
+                  {{ s.date | date:'dd/MM/yy' }}
+                </td>
 
-                  <td class="text-right text-success fw-700">
-                    {{ s.amount | number:'1.0-0' }}
-                  </td>
+                <td class="text-end text-success fw-bold">
+                  {{ s.amount | number:'1.0-0' }}
+                </td>
 
-                </tr>
+              </tr>
 
-              </tbody>
+            </tbody>
 
-            </table>
+          </nz-table>
 
-          </div>
-
-        </div>
+        </nz-card>
 
       </div>
 
       <!-- PURCHASE -->
-      <div class="col-md-6">
+      <div nz-col nzXs="24" nzLg="12">
 
-        <div class="erp-card">
+        <nz-card
+          nzTitle="Recent Purchases"
+          [nzExtra]="purchaseIcon">
 
-          <div class="erp-card-header danger">
-            <i class="bi bi-receipt"></i> Recent Purchases
-          </div>
+          <ng-template #purchaseIcon>
+            <i nz-icon nzType="file-text" nzTheme="outline"></i>
+          </ng-template>
 
-          <div class="erp-card-body p-0">
+          <nz-table
+            #purchaseTable
+            [nzData]="data.recentPurchases"
+            [nzFrontPagination]="false"
+            nzSize="small">
 
-            <table class="erp-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Party</th>
+                <th>Date</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
 
-              <tbody>
+            <tbody>
 
-                <tr *ngFor="let p of data.recentPurchases">
+              <tr *ngFor="let p of purchaseTable.data">
 
-                  <td>
-                    <span class="erp-badge danger">{{ p.no }}</span>
-                  </td>
+                <td>
+                  <nz-tag nzColor="error">
+                    {{ p.no }}
+                  </nz-tag>
+                </td>
 
-                  <td>{{ p.partyName }}</td>
+                <td>{{ p.partyName }}</td>
 
-                  <td class="text-muted fs-sm">
-                    {{ p.date | date:'dd/MM/yy' }}
-                  </td>
+                <td class="text-muted">
+                  {{ p.date | date:'dd/MM/yy' }}
+                </td>
 
-                  <td class="text-right text-danger fw-700">
-                    {{ p.amount | number:'1.0-0' }}
-                  </td>
+                <td class="text-end text-danger fw-bold">
+                  {{ p.amount | number:'1.0-0' }}
+                </td>
 
-                </tr>
+              </tr>
 
-              </tbody>
+            </tbody>
 
-            </table>
+          </nz-table>
 
-          </div>
-
-        </div>
+        </nz-card>
 
       </div>
 

@@ -1,16 +1,37 @@
-<div *ngIf="showLayout()" class="app-root">
-  <!-- Navbar -->
-  <app-navbar></app-navbar>
+<!-- Auth pages par poora layout hide karo -->
+<ng-container *ngIf="showLayout(); else authPage">
 
-  <!-- Body (Sidebar + Content) -->
-  <div class="app-body">
+  <nz-layout class="main-shell">
+
+    <!-- ================================ -->
+    <!-- SIDEBAR                          -->
+    <!-- ================================ -->
     <app-sidebar></app-sidebar>
-    
-    <div class="app-content">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
 
-  <!-- Footer -->
-  <!-- <app-footer></app-footer> -->
-</div>
+    <!-- ================================ -->
+    <!-- RIGHT SIDE: HEADER + CONTENT     -->
+    <!-- ================================ -->
+    <nz-layout class="right-panel">
+
+      <!-- NAVBAR -->
+      <nz-header>
+        <app-navbar></app-navbar>
+      </nz-header>
+
+      <!-- PAGE CONTENT -->
+      <nz-content>
+        <div class="page-content">
+          <router-outlet></router-outlet>
+        </div>
+      </nz-content>
+
+    </nz-layout>
+
+  </nz-layout>
+
+</ng-container>
+
+<!-- Auth pages (login/register etc.) directly render hongi bina layout ke -->
+<ng-template #authPage>
+  <router-outlet></router-outlet>
+</ng-template>

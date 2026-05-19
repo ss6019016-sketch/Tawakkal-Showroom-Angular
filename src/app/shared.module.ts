@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { NgZorroModule } from './ng-zorro.module';
 
+
 @NgModule({
   declarations: [
     PaginationComponent

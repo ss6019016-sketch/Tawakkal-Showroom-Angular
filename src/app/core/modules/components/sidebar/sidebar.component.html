@@ -1,74 +1,75 @@
-<div class="sidebar">
+<nz-sider
+  nzTheme="light"
+  nzCollapsible
+  [(nzCollapsed)]="isCollapsed"
+  [nzTrigger]="null"
+  style="max-width: 280px; width: 280px">
 
   <!-- LOGO -->
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-text">Tawakkal</div>
-    <div class="sidebar-logo-sub">
-      {{ tenantName || 'ShowRoom ERP' }}
-    </div>
+  <div class="logo-container shadow-lg" *ngIf="!isLoading">
+    <img src="assets/images/asia.jfif" alt="Logo" style="display: block; margin: 0 auto" />
   </div>
-
-  <!-- <div class="sidebar-user">
-
-    <div class="sidebar-avatar">
-      {{ userName.charAt(0).toUpperCase() }}
-    </div>
-
-    <div>
-      <div class="sidebar-username">
-        {{ userName }}
-      </div>
-
-      <div class="sidebar-role">
-        {{ userRole }}
-      </div>
-    </div>
-
-  </div> -->
 
   <!-- MENU -->
-  <div class="sidebar-menu">
+  <ul nz-menu nzMode="inline" class="sider-menu">
 
-    <ng-container *ngFor="let item of menuItems">
-
-      <!-- Parent -->
-      <div
-        class="sidebar-item"
-        [class.active]="isParentActive(item)"
-        (click)="toggle(item)"
-      >
-
-        <i class="bi" [ngClass]="'bi-' + item.icon"></i>
-
-        <span>{{ item.label }}</span>
-
-        <i
-          class="bi ms-auto"
-          [ngClass]="item.expanded ? 'bi-chevron-down' : 'bi-chevron-right'">
-        </i>
-
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="container">
+        <nz-spin nzSimple></nz-spin>
       </div>
+    </div>
+    <nz-skeleton
+      *ngIf="isLoading"
+      [nzActive]="true"
+      [nzParagraph]="{ rows: 12 }"
+      class="p-2">
+    </nz-skeleton>
 
-      <!-- Children -->
-      <div *ngIf="item.expanded">
+    <!-- Loaded menu items -->
+    <ng-container *ngIf="!isLoading">
+      <ng-container *ngFor="let item of menuItems">
 
-        <a
-          *ngFor="let child of item.children"
-          class="sidebar-item child-item"
-          [routerLink]="child.route"
-          [class.active]="isActive(child.route || '')"
-        >
+        <!-- Parent with children (submenu) -->
+        <li
+          nz-submenu
+          *ngIf="item.children && item.children.length"
+          [nzTitle]="item.label"
+          [nzIcon]="item.icon"
+          [nzOpen]="item.expanded"
+          (nzOpenChange)="item.expanded = $event">
 
-          <i class="bi bi-dot"></i>
+          <ul>
+            <li
+              nz-menu-item
+              *ngFor="let child of item.children"
+              [routerLink]="child.route"
+              [ngClass]="{ active: isActive(child.route || '') }"
+              nz-tooltip
+              [nzTooltipTitle]="child.label"
+              nzTooltipPlacement="right">
+              <i nz-icon [nzType]="child.icon"></i>
+              <span>{{ child.label }}</span>
+            </li>
+          </ul>
 
-          <span>{{ child.label }}</span>
+        </li>
 
-        </a>
+        <!-- Parent without children (direct link) -->
+        <li
+          nz-menu-item
+          *ngIf="!item.children || !item.children.length"
+          [routerLink]="item.route"
+          [ngClass]="{ active: isActive(item.route || '') }"
+          nz-tooltip
+          [nzTooltipTitle]="item.label"
+          nzTooltipPlacement="right">
+          <i nz-icon [nzType]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </li>
 
-      </div>
-
+      </ng-container>
     </ng-container>
 
-  </div>
-
-</div>
+  </ul>
+</nz-sider>

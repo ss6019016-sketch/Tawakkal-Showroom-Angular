@@ -14,7 +14,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // ============================================
   // USER DATA
   // ============================================
-
+  searchText: string = '';
+  searchOptions: string[] = [];
   userFullName: string = 'Loading...';
   userEmail: string = '';
   userRole: string = '';
@@ -25,7 +26,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // ============================================
   // UI STATES
   // ============================================
+onSearchChange(): void {
+  if (!this.searchText) {
+    this.searchOptions = [];
+    return;
+  }
 
+  this.searchOptions = [
+    this.searchText + ' Dashboard',
+    this.searchText + ' Settings',
+    this.searchText + ' Profile'
+  ];
+}
   notificationCount: number = 3;
   isFullscreen: boolean = false;
   currentLanguage: string = 'EN';
@@ -39,7 +51,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   // ============================================
   // INIT
