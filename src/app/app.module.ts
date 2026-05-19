@@ -10,6 +10,7 @@ import { JwtInterceptor } from './core/interceptors/token.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared.module';
+import { NgZorroModule } from './ng-zorro.module';
 import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout.component';
 import { VenderMasterComponent } from './core/modules/components/Purchase-Management/vender-master/vender-master.component';
@@ -83,8 +84,8 @@ registerLocaleData(en);
     RouterModule,
     AppRoutingModule,
     SharedModule,
-    SalesModule,
-    
+    NgZorroModule,
+    SalesModule
   ],
   providers: [
     {

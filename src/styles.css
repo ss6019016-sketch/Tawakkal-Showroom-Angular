@@ -1,3 +1,4 @@
+@import "~ng-zorro-antd/ng-zorro-antd.min.css";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
@@ -687,3 +688,58 @@ textarea.form-control {
     border-radius: 6px;
     font-size: 12px;
   }
+
+/* ─── APP GRID UTILITIES ─── */
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.grid-col-12 { grid-column: span 12; }
+.grid-col-6  { grid-column: span 6; }
+.grid-col-4  { grid-column: span 4; }
+.grid-col-3  { grid-column: span 3; }
+
+@media (max-width: 1024px) {
+  .grid-col-6,
+  .grid-col-4,
+  .grid-col-3,
+  .grid-col-12 {
+    grid-column: span 12;
+  }
+}
+
+.flex-row { display: flex; align-items: center; }
+.justify-between { justify-content: space-between; }
+.align-center { align-items: center; }
+.mb-4 { margin-bottom: 24px; }
+.mb-3 { margin-bottom: 18px; }
+
+.card-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+.card-panel.ant-card {
+  border-radius: 16px;
+}
+
+.clean-table {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.clean-table .ant-table-thead > tr > th {
+  background: var(--brand-bg);
+}
+
+.zorro-icon-updated {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

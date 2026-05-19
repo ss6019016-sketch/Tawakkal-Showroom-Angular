@@ -1,149 +1,79 @@
 <header class="app-header">
-  <!-- Top Blue Bar -->
-  <div class="top-bar">
-    <div class="top-bar-left">
-      <button class="menu-toggle" (click)="toggleSidebar()" title="Toggle Menu">
-        ☰ MAIN MENU
+  <div class="header-top flex-row justify-between align-center">
+    <div class="header-left flex-row align-center gap-3">
+      <button nz-button nzType="text" class="nav-toggle" (click)="toggleSidebar()">
+        <i nz-icon nzType="menu"></i>
+        <span>MAIN MENU</span>
       </button>
+      <div class="company-name">TAWAKKAL SHOWROOM</div>
     </div>
-    
-    <div class="top-bar-center">
-      <h1 class="company-name">TAWAKKAL SHOWROOM</h1>
-    </div>
-    
-    <div class="top-bar-right">
-      <span class="connection-status">Connected as : <strong>{{ userFullName || 'Sultan' }}</strong></span>
-      <button class="btn-signout" (click)="logout()" title="Sign Out">
-        Sign Out :
-      </button>
+
+    <div class="header-right flex-row align-center gap-3">
+      <span class="connection-status">Connected as <strong>{{ userFullName || 'Sultan' }}</strong></span>
+      <button nz-button nzType="default" nzShape="round" (click)="logout()">Sign Out</button>
     </div>
   </div>
 
-  <!-- Secondary Header Bar -->
-  <div class="secondary-bar">
-    <!-- Left: Logo -->
-    <div class="secondary-left">
-      <!-- <img class="logo" src="https://invoicex.theme29.com/storage/logo/697d99eb6c1fe.png" alt="Logo"> -->
-    </div>
-
-    <!-- Center: Quick Actions (Desktop) -->
-    <div class="secondary-center d-none d-lg-flex">
-      <!-- Add quick action buttons here if needed -->
-    </div>
-
-    <!-- Right: Action Buttons & User -->
-    <div class="secondary-right">
-
-         <button class="action-btn" routerLink="/product-master" title="Product Master">
-       <i class="bi bi-cart"></i>
+  <div class="header-bottom flex-row justify-between align-center">
+    <div class="header-actions flex-row align-center gap-2">
+      <button nz-button nzType="default" nzShape="round" routerLink="/product-master">
+        <i nz-icon nzType="shopping-cart"></i>
         <span>Product Master</span>
       </button>
-      <!-- Action Buttons -->
-      <button class="action-btn" routerLink="/sales-invoice" title="Sales Invoice">
-        <i class="bi bi-file-earmark-text"></i>
+      <button nz-button nzType="default" nzShape="round" routerLink="/sales-invoice">
+        <i nz-icon nzType="file-text"></i>
         <span>Sales Invoice</span>
       </button>
-
-      <button class="action-btn" title="Tawakkal Stamp">
-        <i class="bi bi-patch-check"></i>
+      <button nz-button nzType="default" nzShape="round">
+        <i nz-icon nzType="check-circle"></i>
         <span>Tawakkal Stamp</span>
       </button>
+    </div>
 
-      <!-- Notifications -->
-      <button class="icon-btn" (click)="openNotifications()" title="Notifications">
-        <i class="bi bi-bell"></i>
-        <span class="badge-count" *ngIf="hasNotifications">{{ getNotificationDisplay() }}</span>
+    <div class="header-actions flex-row align-center gap-2">
+      <button nz-button nzType="default" nzShape="circle" nz-tooltip nzTitle="Notifications" (click)="openNotifications()">
+        <i nz-icon nzType="bell"></i>
+      </button>
+      <button nz-button nzType="default" nzShape="circle" nz-tooltip nzTitle="Fullscreen" (click)="toggleFullscreen()">
+        <i nz-icon [nzType]="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"></i>
       </button>
 
-      <!-- Fullscreen -->
-      <button class="icon-btn" (click)="toggleFullscreen()" title="Fullscreen">
-        <i class="bi" [ngClass]="isFullscreen ? 'bi-fullscreen-exit' : 'bi-arrows-fullscreen'"></i>
-      </button>
-
-      <!-- Language Dropdown -->
-      <!-- <div class="dropdown">
-        <button class="icon-btn dropdown-toggle" data-bs-toggle="dropdown">
-          🌐 {{ currentLanguage }}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="changeLanguage('EN')">
-              <span class="me-2">🇬🇧</span> English
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="changeLanguage('UR')">
-              <span class="me-2">🇵🇰</span> اردو
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="changeLanguage('AR')">
-              <span class="me-2">🇸🇦</span> عربي
-            </a>
-          </li>
-        </ul>
-      </div> -->
-
-      <!-- User Dropdown -->
-      <div class="dropdown">
-        <button class="user-btn" data-bs-toggle="dropdown">
-          <div class="user-avatar">
-            <div *ngIf="userProfilePicture && !isLoading; else showInitials">
+      <nz-dropdown nzTrigger="click">
+        <button nz-button nzType="default" nzShape="round" class="user-dropdown-btn">
+          <span class="user-avatar">
+            <ng-container *ngIf="userProfilePicture && !isLoading; else showInitials">
               <img [src]="getProfilePictureUrl()" alt="Profile">
-            </div>
+            </ng-container>
             <ng-template #showInitials>
               <span>{{ userInitials }}</span>
             </ng-template>
-          </div>
-          <div class="user-info d-none d-md-block">
+          </span>
+          <span class="user-info">
             <span class="user-name">{{ userFullName }}</span>
             <span class="user-role">{{ userRole }}</span>
-          </div>
-          <i class="bi bi-chevron-down"></i>
+          </span>
+          <i nz-icon nzType="down"></i>
         </button>
-
-        <ul class="dropdown-menu dropdown-menu-end user-dropdown">
-          <li class="dropdown-header">
-            <div class="user-dropdown-header">
-              <div class="user-avatar-large">
-                <div *ngIf="userProfilePicture && !isLoading; else showLargeInitials">
-                  <img [src]="getProfilePictureUrl()" alt="Profile">
-                </div>
-                <ng-template #showLargeInitials>
-                  <span>{{ userInitials }}</span>
-                </ng-template>
-              </div>
-              <div class="user-info-dropdown">
-                <strong>{{ userFullName }}</strong>
-                <small>{{ userEmail }}</small>
-                <span class="badge mt-1" [ngClass]="getRoleBadgeClass()">{{ userRole }}</span>
-              </div>
-            </div>
+        <ul nz-menu nzSelectable="false" class="user-menu">
+          <li nz-menu-item (click)="navigateToProfile()">
+            <i nz-icon nzType="user"></i>
+            My Profile
           </li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="navigateToProfile()">
-              <i class="bi bi-person"></i> My Profile
-            </a>
+          <li nz-menu-item (click)="navigateToProfile()">
+            <i nz-icon nzType="key"></i>
+            Change Password
           </li>
-           <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="navigateToProfile()">
-              <i class="bi bi-person"></i> Change Password
-            </a>
+          <li nz-menu-item (click)="navigateToSettings()">
+            <i nz-icon nzType="setting"></i>
+            Settings
           </li>
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="navigateToSettings()">
-              <i class="bi bi-gear"></i> Settings
-            </a>
-          </li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="logout()">
-              <i class="bi bi-box-arrow-right"></i> Logout
-            </a>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="logout()">
+            <i nz-icon nzType="logout"></i>
+            Logout
           </li>
         </ul>
-      </div>
+      </nz-dropdown>
     </div>
   </div>
 </header>

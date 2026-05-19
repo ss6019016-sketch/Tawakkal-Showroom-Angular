@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationComponent } from './shared/pagination/pagination.component';
-
+import { NgZorroModule } from './ng-zorro.module';
 
 @NgModule({
   declarations: [
@@ -13,14 +13,16 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
     CommonModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgZorroModule
   ],
   exports: [
     CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    PaginationComponent
+    PaginationComponent,
+    NgZorroModule
   ]
 })
 export class SharedModule { }
