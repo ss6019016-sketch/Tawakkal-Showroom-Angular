@@ -22,6 +22,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @NgModule({
   exports: [
@@ -46,7 +47,8 @@ import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
     NzTagModule,
     NzEmptyModule,
     NzSkeletonModule,
-    NzAutocompleteModule
+    NzAutocompleteModule,
+    NzAvatarModule
   ]
 })
 export class NgZorroModule {}

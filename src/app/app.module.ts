@@ -32,13 +32,12 @@ import { StockAdjustmentComponent } from './core/modules/components/Inventory-Ma
 import { ItemRegistrationComponent } from './core/modules/components/Inventory-Management/item-registration/item-registration.component';
 import { InventoryReportsComponent } from './core/modules/components/Inventory-Management/inventory-reports/inventory-reports.component';
 import { UsersComponent } from './core/modules/components/Setup-Management/users/users.component';
-import { NavbarComponent } from './core/modules/components/navbar/navbar.component';
-import { SidebarComponent } from './core/modules/components/sidebar/sidebar.component';
 import { DashboardComponent } from './core/modules/auth/dashboard/dashboard.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { TenantManagementComponent } from './core/modules/components/Tenant-Management/tenant-management.component';
 import { RoleManagementComponent } from './core/modules/components/Setup-Management/role-management/role-management.component';
 import { ModuleManagementComponent } from './core/modules/components/Setup-Management/mudule-management/module-management.component';
+import { ShellComponent } from './core/layouts/main-layout/shell.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
 import en from '@angular/common/locales/en';
@@ -68,8 +67,7 @@ registerLocaleData(en);
     DealerRateListComponent,
     RoleManagementComponent,
     UsersComponent,
-    NavbarComponent,
-    SidebarComponent,
+    ShellComponent,
     DashboardComponent,
     TenantManagementComponent,
     ModuleManagementComponent,
