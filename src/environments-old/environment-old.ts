@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:7062/api/',
+  apiUrl: 'https://tawakkal-show-room.runasp.net/api/',
 
   apiTimeout: 30000,
   tokenKey: 'tawakkal_token',
